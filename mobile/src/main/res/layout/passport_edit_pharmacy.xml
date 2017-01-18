@@ -1,0 +1,127 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/displayBackground">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/info_padding_left"
+            android:paddingEnd="@dimen/info_padding_right"
+            android:paddingLeft="@dimen/info_padding_left"
+            android:paddingRight="@dimen/info_padding_right"
+            android:paddingTop="@dimen/info_padding_top"
+            android:paddingBottom="@dimen/info_padding_bottom"
+            android:background="@drawable/text_view_heading">
+
+            <TextView
+                android:id="@+id/editPharmacyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/passport_edit_text"
+            >
+
+            <EditText
+                android:id="@+id/pharmacyName"
+                android:hint="@string/name"
+                android:inputType="text"
+                android:text="O'Sullivans"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                />
+
+        </RelativeLayout>
+
+        <!-- PHONE NUMBER -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingStart="@dimen/info_padding_left"
+            android:paddingEnd="@dimen/info_padding_right"
+            android:paddingLeft="@dimen/info_padding_left"
+            android:paddingRight="@dimen/info_padding_right"
+            android:paddingTop="@dimen/info_padding_top"
+            android:paddingBottom="@dimen/info_padding_bottom"
+            android:background="@drawable/text_view_heading">
+
+            <TextView
+                android:id="@+id/editPharmacyNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phoneNumber"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/passport_edit_text"
+            >
+
+            <EditText
+                android:id="@+id/pharmacyNumber"
+                android:hint="@string/phoneNumber"
+                android:inputType="phone"
+                android:text="0214453234"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:layout_toLeftOf="@+id/cancelButton"
+                android:layout_toStartOf="@+id/cancelButton"/>
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:text="@string/cancel"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</ScrollView>

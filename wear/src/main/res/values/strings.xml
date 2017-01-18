@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HeartRate</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="check">Check</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="start">Press Heart</string>
+    <string name="top_label">Press Heart</string>
+    <string name="init_title">sensor_type</string>
+    <string name="init_values">Getting data...</string>
+</resources>
