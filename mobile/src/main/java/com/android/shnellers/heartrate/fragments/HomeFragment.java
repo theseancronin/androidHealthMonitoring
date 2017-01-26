@@ -95,8 +95,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         mHeartRateDatabase = new HeartRateDatabase(getActivity());
 
-        extrasBtn = (ImageButton) mView.findViewById(R.id.extras);
-        extrasBtn.setOnClickListener(this);
+//
 
         Description desc = new Description();
         desc.setText("");
@@ -106,6 +105,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "onCreateView: ");
         return mView;
     }
+
 
     private void displayHeartRateCards() {
 

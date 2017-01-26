@@ -10,6 +10,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class ActivityDatabase {
 
+    private static final int DB_VERSION = 1;
+
+    private static final String DB_NAME = "HealthMonitor.db";
+
+
+
     private SQLiteDatabase db;
 
     private ActivityContract.ActivityEntries mContract;
@@ -20,7 +26,9 @@ public class ActivityDatabase {
 
     public ActivityDatabase(Context context) {
         mContext = context;
-        mDBHelper = new ActivityDBHelper(context);
+        mDBHelper = new ActivityDBHelper(context, DB_VERSION,
+                ActivityContract.ActivityEntries.TABLE_NAME,
+                DB_NAME);
     }
 
     public ActivityDatabase open() {

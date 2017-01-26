@@ -1,6 +1,6 @@
 package com.android.shnellers.heartrate;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,7 +10,9 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,16 +33,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class HeartRateActivity extends Activity implements SensorEventListener, View.OnClickListener,
+import static android.content.Context.SENSOR_SERVICE;
+
+/**
+ * The type Heart rate activity.
+ */
+public class HeartRateActivity extends Fragment implements SensorEventListener, View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         DataApi.DataListener{
 
     private static final boolean DEBUG = true;
 
+    /**
+     * The constant TAG.
+     */
     public static final String TAG = "HeartRateActivity";
 
     private static final String WEARABLE_DATA_PATH = "/wearable/data/path";
 
+    /**
+     * The constant CHECKING.
+     */
     public static final String CHECKING = "Checking...";
     private SensorManager mSensorManager;
 
@@ -54,46 +67,83 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
     private List<Integer> sensorReadings;
 
     private CountDownTimer mCountDownTimer;
+
     private GoogleApiClient mGoogleApiClient;
+
+    private ImageButton mOkBtn;
+    private ImageButton mCancelBtn;
 
     private Node mNode;
 
+    private View mView;
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_heart_rate);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mView = inflater.inflate(R.layout.activity_heart_rate, container, false);
+
+        mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
         mHeartSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
 
-        mResultLabel = (TextView) findViewById(R.id.heart_rate);
-        mTopLabel = (TextView) findViewById(R.id.top_label);
+        mResultLabel = (TextView) mView.findViewById(R.id.heart_rate);
+        mTopLabel = (TextView) mView.findViewById(R.id.top_label);
 
-        mHeartBtn = (ImageButton) findViewById(R.id.check_heart_rate);
+        mHeartBtn = (ImageButton) mView.findViewById(R.id.check_heart_rate);
         mHeartBtn.setOnClickListener(this);
+
+        mOkBtn = (ImageButton) mView.findViewById(R.id.ok_btn);
+        mCancelBtn = (ImageButton) mView.findViewById(R.id.cancel_btn);
+
+        mOkBtn.setOnClickListener(this);
+        mCancelBtn.setOnClickListener(this);
 
         heartSensorActive = false;
 
         sensorReadings = new ArrayList<>();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        Log.d(TAG, "onCreateView: ");
+
+        return mView;
+    }
+
+    /**
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate: ");
 
     }
 
+    /**
+     *
+     */
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // start listening for events on the heart sensor
         if (mSensorManager != null) {
@@ -103,14 +153,21 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
         Log.d("HearRateActivity", "onResume");
     }
 
+    /**
+     *
+     */
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this, mHeartSensor);
         mGoogleApiClient.disconnect();
         Log.d("HearRateActivity", "onPause");
     }
 
+    /**
+     *
+     * @param sensorEvent
+     */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_HEART_RATE) {
@@ -125,10 +182,19 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
 
     }
 
+    /**
+     *
+     * @param sensorValue
+     */
     private void storeHeartSensorValue(final int sensorValue) {
         sensorReadings.add(sensorValue);
     }
 
+    /**
+     *
+     * @param sensor
+     * @param i
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
         // called when accuracy of sensor has changed
@@ -138,15 +204,27 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.check_heart_rate:
+                Log.d(TAG, "onClick: ");
                 if (heartSensorActive) {
                     stopHeartMonitor();
                 } else {
                     startHeartMonitor();
                 }
                 break;
+            case R.id.ok_btn:
+                mOkBtn.setVisibility(View.INVISIBLE);
+                mCancelBtn.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.cancel_btn:
+                mOkBtn.setVisibility(View.INVISIBLE);
+                mCancelBtn.setVisibility(View.INVISIBLE);
+                break;
         }
     }
 
+    /**
+     *
+     */
     private void startHeartMonitor() {
         mTopLabel.setText(CHECKING);
         heartSensorActive = true;
@@ -168,6 +246,9 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
         }.start();
     }
 
+    /**
+     *
+     */
     private void stopHeartMonitor() {
         heartSensorActive = false;
         mResultLabel.setText("--");
@@ -180,6 +261,9 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
         }
     }
 
+    /**
+     *
+     */
     private void calculateAverageHeartRate() {
         List<Integer> readings = getSensorReadings();
         int sum = 0;
@@ -201,6 +285,11 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
         displayResult(heartRate);
     }
 
+    /**
+     *
+     * @param heartRate
+     * @param dateTime
+     */
     private void sendMessage(int heartRate, long dateTime) {
         Log.d(TAG, "sendMessage: ");
         PutDataMapRequest dataMap = PutDataMapRequest.create(WEARABLE_DATA_PATH);
@@ -215,7 +304,12 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
     }
 
 
-    private boolean validateConnection() {
+    /**
+     * Validate connection boolean.
+     *
+     * @return boolean boolean
+     */
+    protected boolean validateConnection() {
         if (mGoogleApiClient.isConnected()) {
             return true;
         }
@@ -229,6 +323,10 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
         mTopLabel.setText("");
     }
 
+    /**
+     *
+     * @param heartRate
+     */
     private void displayResult(final int heartRate) {
         mHeartBtn.setVisibility(View.INVISIBLE);
         mResultLabel.setVisibility(View.VISIBLE);
@@ -237,17 +335,34 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
             mResultLabel.setText("Reading Failed: Try Again");
         } else {
             mResultLabel.setText(Integer.toString(heartRate));
+
+            if (heartRate >= 120) {
+                mOkBtn.setVisibility(View.VISIBLE);
+                mCancelBtn.setVisibility(View.VISIBLE);
+            }
         }
 
     }
+
+    /**
+     *
+     * @return
+     */
     private List<Integer> getSensorReadings() {
         return sensorReadings;
     }
 
+    /**
+     *
+     */
     private void resetSensorReadings() {
         sensorReadings.clear();
     }
 
+    /**
+     *
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (DEBUG) Log.d(TAG, "onConnected: " + bundle);
@@ -280,10 +395,25 @@ public class HeartRateActivity extends Activity implements SensorEventListener, 
 
     }
 
+    /**
+     * The type Send message to data layer.
+     */
     public class SendMessageToDataLayer extends Thread {
+        /**
+         * The Path.
+         */
         String path;
+        /**
+         * The Put data request.
+         */
         PutDataRequest putDataRequest;
 
+        /**
+         * Instantiates a new Send message to data layer.
+         *
+         * @param path           the path
+         * @param putDataRequest the put data request
+         */
         public SendMessageToDataLayer(String path, PutDataRequest putDataRequest) {
             this.path = path;
             this.putDataRequest = putDataRequest;

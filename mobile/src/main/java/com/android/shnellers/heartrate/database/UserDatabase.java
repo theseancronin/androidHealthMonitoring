@@ -18,17 +18,17 @@ import com.android.shnellers.heartrate.User;
 public class UserDatabase {
 
     // Implement methods that create and maintain the database.
-    public static final int DATABASE_VERSION = 5;
-    public static final String DATABASE_NAME = "HealthMonitor.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "Users.db";
     private static final String TAG = UserDatabaseHelper.class.getSimpleName();
 
     public static final String SQL_CREATE_USERS =
-            "CREATE TABLE " + UserContract.UserEntry.TABLE_NAME + " (" +
-                    UserContract.UserEntry._ID + " INTEGER PRIMARY KEY, " +
+            "CREATE TABLE IF NOT EXISTS " + UserContract.UserEntry.TABLE_NAME + " (" +
+                    UserContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     UserContract.UserEntry.COLUMN_NAME + " VARCHAR(70) NOT NULL," +
                     UserContract.UserEntry.COLUMN_EMAIL + " VARCHAR(70) NOT NULL," +
                     UserContract.UserEntry.COLUMN_PASSWORD + " VARCHAR(70) NOT NULL," +
-                    UserContract.UserEntry.COLUMN_AGE + " INTEGER(3) NOT NULL," +
+                    UserContract.UserEntry.COLUMN_AGE + " INTEGER(3) ," +
                     UserContract.UserEntry.COLUMN_CONDITION + " VARCHAR(1000)," +
                     UserContract.UserEntry.COLUMN_LOGGED_IN + " INTEGER(1));";
 
@@ -60,7 +60,7 @@ public class UserDatabase {
      */
     public UserDatabase open () throws SQLException {
         db = mUserDatabaseHelper.getWritableDatabase();
-        Log.d("OpeningDB", "OPen");
+        Log.d("OpeningDB", "OPENING");
         return this;
     }
 
@@ -92,9 +92,17 @@ public class UserDatabase {
         values.put("email", email);
         values.put("password", password);
 
-        getDB().insert("users", null, values);
+        open();
+        long insterted = db.insert(UserContract.UserEntry.TABLE_NAME, null, values);
 
-        printDB();
+        if (insterted != -1) {
+            Log.d(TAG, "insert: INSERT WORKED");
+        } else {
+            Log.d(TAG, "insert: NOT INSERTED");
+        }
+        close();
+        Log.d(TAG, "insert: " + name);
+       // printDB();
     }
 
     /**
@@ -106,6 +114,7 @@ public class UserDatabase {
      * @throws SQLException
      */
     public Cursor getUser(final String email, final String password) throws SQLException {
+        open();
         Cursor user = db.rawQuery("SELECT * FROM users WHERE email = '" + email +
                 "' AND password = '" + password + "'", null);
 
@@ -115,10 +124,13 @@ public class UserDatabase {
 //            db.rawQuery("UPDATE users SET " + UserContract.UserEntry.COLUMN_LOGGED_IN +
 //                       " = 1 WHERE id = " +
 //                       Integer.parseInt(user.getString(user.getColumnIndex("id"))) + ";", null);
+            close();
             return user;
         } else {
+            close();
             return null;
         }
+
     }
 
     /**

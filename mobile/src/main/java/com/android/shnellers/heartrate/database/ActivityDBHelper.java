@@ -3,6 +3,7 @@ package com.android.shnellers.heartrate.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Sean on 15/01/2017.
@@ -10,37 +11,59 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class ActivityDBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final String TAG = "ActivityDBHelper";
 
-    private static final String DB_NAME = "HealthMonitor.db";
 
-    private static final String CREATE_TABLE =
+
+    private String mCreateTable;
+
+    private String mTableName;
+
+    private static final String CREATE_RECOGNITION_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + ActivityContract.ActivityEntries.TABLE_RECOGNITION + "( " +
+                    ActivityContract.ActivityEntries.ID_COLUMN + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    ActivityContract.ActivityEntries.TYPE_COLUMN  + " INTEGER, " +
+                    ActivityContract.ActivityEntries.MINUTES_DETECTED + " INTEGER, " +
+                    ActivityContract.ActivityEntries.MILLISECONDS + " INTEGER," +
+                    ActivityContract.ActivityEntries.DATE_TIME_COLUMN  + " INTEGER);";
+
+    private static final String CREATE_ACTIVITIES_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ActivityContract.ActivityEntries.TABLE_NAME + "( " +
-                    "id INTEGER " + ActivityContract.ActivityEntries.ID_COLUMN + " NOT NULL AUTOINCREMENT, " +
-                    "type VARCHAR " + ActivityContract.ActivityEntries.TYPE_COLUMN + ", " +
-                    "distance INTEGER " + ActivityContract.ActivityEntries.DISTANCE_TRAVELLED_COLUMN + ", " +
-                    "start_time int " + ActivityContract.ActivityEntries.START_TIME_COLUMN + ", " +
-                    "end_time int " + ActivityContract.ActivityEntries.END_TIME_COLUMN + ", " +
-                    "time_taken int " + ActivityContract.ActivityEntries.TIME_TAKEN_COLUMN + ", " +
-                    "date_time INTEGER " + ActivityContract.ActivityEntries.DATE_TIME_COLUMN + ", " +
-                    "calories_burned INTEGER " + ActivityContract.ActivityEntries.CALORIES_BURNED_COLUMN + ", " +
-                    "steps INTEGER " + ActivityContract.ActivityEntries.STEPS_COLUMN + ");";
+                    ActivityContract.ActivityEntries.ID_COLUMN +" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    ActivityContract.ActivityEntries.TYPE_COLUMN + " VARCHAR, " +
+                    ActivityContract.ActivityEntries.DISTANCE_TRAVELLED_COLUMN + " INTEGER , " +
+                    ActivityContract.ActivityEntries.START_TIME_COLUMN + " INTEGER, " +
+                    ActivityContract.ActivityEntries.END_TIME_COLUMN + " INTEGER, " +
+                    ActivityContract.ActivityEntries.TIME_TAKEN_COLUMN + " INTEGER, " +
+                    ActivityContract.ActivityEntries.DATE_TIME_COLUMN + " INTEGER, " +
+                    ActivityContract.ActivityEntries.CALORIES_BURNED_COLUMN +  " INTEGER, " +
+                    ActivityContract.ActivityEntries.STEPS_COLUMN  + "INTEGER);";
 
+    public ActivityDBHelper(Context context, final int version,
+                            final String tableName, final String dbName) {
+        super(context, dbName, null, version);
+        mCreateTable = tableName;
 
-    public ActivityDBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(CREATE_TABLE);
+        Log.d(TAG, "onCreate: CREATING TABLE");
+        sqLiteDatabase.execSQL(CREATE_RECOGNITION_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ACTIVITIES_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+
         if (newVersion > oldVersion) {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ActivityContract.ActivityEntries.TABLE_NAME);
-            onCreate(sqLiteDatabase);
+            Log.d(TAG, "onUpgrade: DROPPING");
+            if (mTableName != null) {
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + mTableName);
+                onCreate(sqLiteDatabase);
+            }
         }
     }
+
+
 }

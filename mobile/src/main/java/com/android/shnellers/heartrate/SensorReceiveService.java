@@ -55,7 +55,7 @@ public class SensorReceiveService extends WearableListenerService implements Mes
 
     @Override
     public void onDataChanged(DataEventBuffer dataEventBuffer) {
-        Log.d(TAG, "onDataChanged: " + dataEventBuffer);
+      //  Log.d(TAG, "onDataChanged: " + dataEventBuffer);
 
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -76,9 +76,9 @@ public class SensorReceiveService extends WearableListenerService implements Mes
 
             String path = uri.getPath();
 
-            Log.d(TAG, "path: " + path);
+         //   Log.d(TAG, "path: " + path);
             if (path.equals(WEARABLE_DATA_PATH)) {
-                Log.d(TAG, "onDataChanged: Contains path");
+             //   Log.d(TAG, "onDataChanged: Contains path");
 
                 unpack(DataMapItem.fromDataItem(event.getDataItem()).getDataMap());
             }
@@ -110,10 +110,26 @@ public class SensorReceiveService extends WearableListenerService implements Mes
         values.put(HeartRateContract.Entry.BPM_COLUMN, heartRate);
         values.put(HeartRateContract.Entry.DATE_TIME_COLUMN, dateTime);
 
+        checkForWarnings(heartRate);
+
         mHeartRateDatabase.storeHeartRate(values);
 
-        Log.d(TAG, "Date & Time: " + simpleDateFormat.format(calendar.getTime()));
-        Log.d(TAG, "Heart_Rate: " + Integer.toString(heartRate));
+       // Log.d(TAG, "Date & Time: " + simpleDateFormat.format(calendar.getTime()));
+        //Log.d(TAG, "Heart_Rate: " + Integer.toString(heartRate));
+    }
+
+    private void checkForWarnings(int heartRate) {
+
+        int age = 32;
+
+        if (heartRate >= 120) {
+            notifyUserOfAbnormalHeartRate();
+        }
+
+    }
+
+    private void notifyUserOfAbnormalHeartRate() {
+
     }
 
     @Override
@@ -123,7 +139,7 @@ public class SensorReceiveService extends WearableListenerService implements Mes
 
         showToast(event);
 
-        Log.d(TAG, "MessageReceived");
+        //Log.d(TAG, "MessageReceived");
         super.onMessageReceived(messageEvent);
     }
 

@@ -15,20 +15,20 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_readings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6">
+        android:layout_weight="0.6"
+        android:layout_margin="16dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true">
 
             <LinearLayout
                 android:id="@+id/top_set"
@@ -86,64 +86,7 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="14dp"
-        android:background="#3b8298" >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center|center_horizontal"
-            android:layout_centerInParent="true">
-
-            <ImageButton
-                android:id="@+id/heart_view"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circle"
-                android:src="@drawable/ic_heart_outline"
-
-                />
-
-            <ImageButton
-                android:id="@+id/activity_view"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/circle"
-                android:src="@drawable/ic_run"
-                />
-
-            <ImageButton
-                android:id="@+id/dietary_view"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/circle"
-                android:src="@drawable/ic_food_apple"
-
-                />
-
-            <ImageButton
-                android:id="@+id/extras"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/circle"
-                android:src="@drawable/ic_heart_outline"
-               />
-
-        </LinearLayout>
-
-    </RelativeLayout>
 
 
 </LinearLayout>

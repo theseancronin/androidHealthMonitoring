@@ -92,6 +92,14 @@
     <string name="history">History</string>
     <string name="bpm">BPM</string>
     <string name="default_dpm">0</string>
+    <string name="steps">Steps</string>
+    <string name="start">Start</string>
+    <string name="analysis">Analysis</string>
+    <string name="walking">Walking</string>
+    <string name="running">Running</string>
+    <string name="cycling">Cycling</string>
+    <string name="summary">Summary</string>
+    <string name="type">Type</string>
 
     <!-- Extras list menu -->
     <array name="extrasListMenu">

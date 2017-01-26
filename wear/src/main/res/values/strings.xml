@@ -7,4 +7,16 @@
     <string name="top_label">Press Heart</string>
     <string name="init_title">sensor_type</string>
     <string name="init_values">Getting data...</string>
+    <string name="start_txt">Start</string>
+    <string name="count">Count</string>
+    <string name="detected">Detected</string>
+    <string name="time">Time</string>
+    <string name="distance">Distance</string>
+    <string name="calories">Calories</string>
+    <string name="latest_summary">Latest Summary</string>
+    <string name="cycling">Cycling</string>
+    <string name="running">Running</string>
+    <string name="walking">Walking</string>
+    <string name="new_activity">New Activity</string>
+    <string name="latest">Latest</string>
 </resources>

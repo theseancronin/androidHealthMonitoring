@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.shnellers.heartrate.activities.RegisterActivity;
+
 import com.android.shnellers.heartrate.database.UserDatabase;
 
 

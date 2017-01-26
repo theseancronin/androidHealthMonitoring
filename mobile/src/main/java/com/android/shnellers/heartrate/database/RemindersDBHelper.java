@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class RemindersDBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE =
-            "CREATE TABLE " + RemindersContract.Columns.TABLE_NAME + " (" +
+            "CREATE TABLE IF NOT EXISTS " + RemindersContract.Columns.TABLE_NAME + " (" +
             RemindersContract.Columns.ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RemindersContract.Columns.HOUR_COLUMN + " INTEGER, " +
             RemindersContract.Columns.MINUTE_COLUMN + " INTEGER, " +
@@ -22,9 +22,9 @@ public class RemindersDBHelper extends SQLiteOpenHelper {
     private static final String DELETE_TABLE = "" +
             "DROP TABLE IF EXISTS " + RemindersContract.Columns.TABLE_NAME;
 
-    private static final String DB_NAME = "reminders.db";
+    private static final String DB_NAME = "Reminder.db";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
 
 

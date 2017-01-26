@@ -6,30 +6,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dev.shnellers.heartrate.WearMainActivity"
+    tools:context="com.android.shnellers.heartrate.WearMainActivity"
     tools:deviceIds="wear">
 
-    <RelativeLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        >
+        app:layout_box="all">
+
+        <android.support.wearable.view.GridViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true" />
+
+     <!--   <android.support.v4.view.ViewPager
+            android:id="@+id/wear_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            >
 
 
-        <Button
-            android:id="@+id/heartBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/check"/>
+            <Button
+                android:id="@+id/heartBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check"/>
 
-        <Button
-            android:id="@+id/set_heart_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/heartBtn"/>
+            <Button
+                android:id="@+id/set_heart_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/heartBtn"/>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+        -->
+
+    </FrameLayout>
+
+
 
 </android.support.wearable.view.BoxInsetLayout>

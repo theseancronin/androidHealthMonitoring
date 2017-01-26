@@ -10,9 +10,9 @@ import android.util.Log;
  */
 
 public class GPDatabaseHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 1;
 
-    private static final String DB_NAME = "gp_details.db";
+    private static final String DB_NAME = "GP.db";
 
     private static final String TAG = "GP_DB";
 

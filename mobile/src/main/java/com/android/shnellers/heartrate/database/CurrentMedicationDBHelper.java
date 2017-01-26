@@ -12,7 +12,7 @@ public class CurrentMedicationDBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
 
-    private static final String DB_NAME = "current_medication.db";
+    private static final String DB_NAME = "CurrentMedication.db";
 
     private static final String CREATE_TABLE = "CREATE TABLE current_medication (" +
             "user_id Integer(9) NOT NULL PRIMARY KEY, " +

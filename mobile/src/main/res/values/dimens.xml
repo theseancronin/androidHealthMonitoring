@@ -24,4 +24,5 @@
 
     <dimen name="info_heading_padding_top">5dp</dimen>
     <dimen name="info_heading_padding_bottom">5dp</dimen>
+
 </resources>

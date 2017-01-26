@@ -23,6 +23,10 @@ public class ActivityContract {
         public static final String CALORIES_BURNED_COLUMN = "calories_burned";
         public static final String STEPS_COLUMN = "steps";
 
+        public static final String TABLE_RECOGNITION = "activities_recognised";
+        public static final String MINUTES_DETECTED = "minutes";
+        public static final String MILLISECONDS = "milliseconds";
+
     }
 
 }

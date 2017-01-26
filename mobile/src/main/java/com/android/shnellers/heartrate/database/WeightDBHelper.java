@@ -12,7 +12,7 @@ public class WeightDBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
 
-    private static final String DB_NAME = "HealthMonitor";
+    private static final String DB_NAME = "Weight.db";
 
     private static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RemindersContract.Columns.TABLE_NAME + " (" +

@@ -12,7 +12,7 @@ public class MedicationDatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
 
-    private static final String DB_NAME = "medication.db";
+    private static final String DB_NAME = "Medication.db";
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS medication (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +

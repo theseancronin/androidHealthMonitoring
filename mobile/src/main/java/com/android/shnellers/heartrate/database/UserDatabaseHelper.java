@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import static android.content.ContentValues.TAG;
+
 
 /**
  * Created by Sean on 19/10/2016.
@@ -13,7 +13,12 @@ import static android.content.ContentValues.TAG;
 
 public class UserDatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = "UserDBHelper";
+
     private int mDBVersion;
+
+    private SQLiteDatabase db;
+
 
     public UserDatabaseHelper(Context context, String name,
                               SQLiteDatabase.CursorFactory factory, int version) {
@@ -29,6 +34,7 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "onCreate: CREATING DATABASE");
         Log.w(TAG, "Current db version is " + db.getVersion());
         db.execSQL(UserDatabase.SQL_CREATE_USERS);
     }
