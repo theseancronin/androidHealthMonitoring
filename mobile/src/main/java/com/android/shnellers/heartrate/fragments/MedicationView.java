@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -25,12 +26,16 @@ import com.android.shnellers.heartrate.database.MedicationDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 /**
  * Created by Sean on 28/11/2016.
  */
 
-public class MedicationFragment extends Fragment implements View.OnClickListener {
+public class MedicationView extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "Medication.Fragment";
 
@@ -48,6 +53,8 @@ public class MedicationFragment extends Fragment implements View.OnClickListener
 
     private boolean allowRefresh;
 
+    @BindView(R.id.add_medication)
+    FloatingActionButton mAddMedication;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +71,7 @@ public class MedicationFragment extends Fragment implements View.OnClickListener
 
         db = new MedicationDatabase(getActivity());
 
-        newMedicationBtn = (Button) view.findViewById(R.id.add_medication);
-        newMedicationBtn.setOnClickListener(this);
+        ButterKnife.bind(this, view);
 
         allowRefresh = false;
 
@@ -130,10 +136,15 @@ public class MedicationFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_medication:
-                Intent intent = new Intent(getActivity(), MedicationActivity.class);
-                startActivityForResult(intent, 500);
+
                 break;
         }
+    }
+
+    @OnClick(R.id.add_medication)
+    public void addMedication() {
+        Intent intent = new Intent(getActivity(), MedicationActivity.class);
+        startActivityForResult(intent, 500);
     }
 
     @Override

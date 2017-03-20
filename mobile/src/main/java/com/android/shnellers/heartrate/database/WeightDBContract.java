@@ -15,6 +15,9 @@ public class WeightDBContract {
         public static final String ID_COLUMN = "id";
         public static final String WEIGHT_COLUMN = "weight";
         public static final String DATE_TIME_COLUMN = "date_time";
+        public static final String DATE = "date";
+        public static final String TIME = "time";
+        public static final String TYPE = "type";
     }
 
 }

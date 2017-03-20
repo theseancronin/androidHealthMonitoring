@@ -15,6 +15,7 @@ public class RemindersDBHelper extends SQLiteOpenHelper {
             RemindersContract.Columns.ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RemindersContract.Columns.HOUR_COLUMN + " INTEGER, " +
             RemindersContract.Columns.MINUTE_COLUMN + " INTEGER, " +
+
             RemindersContract.Columns.DAYS_COLUMN + " VARCHAR(200), " +
             RemindersContract.Columns.TYPE_COLUMN + " VARCHAR(100)," +
             RemindersContract.Columns.ACTIVE_COLUMN + " INTEGER(1));";

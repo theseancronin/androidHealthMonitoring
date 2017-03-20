@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +17,30 @@ import android.view.View;
 
 import com.android.shnellers.heartrate.database.RemindersContract;
 import com.android.shnellers.heartrate.database.RemindersDatabase;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItemBuffer;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Reminders extends AppCompatActivity implements View.OnClickListener {
+public class Reminders extends AppCompatActivity implements View.OnClickListener,
+                    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        DataApi.DataListener{
 
     private static final String TAG = "Reminders";
+
+    private static final String WEARABLE_DATA_PATH = "/reminders/data/path";
 
     private FloatingActionButton fab;
 
@@ -32,6 +51,10 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
     private int count;
 
     private RemindersDatabase db;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    private Node mNode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +70,14 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
         reminders = new ArrayList<>();
 
         db = new RemindersDatabase(this);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        mGoogleApiClient.connect();
+
 
         Log.d(TAG, "onCreate: ");
 
@@ -55,8 +86,17 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
 
     @Override
     protected void onStart() {
+
         super.onStart();
+
         Log.d("Reminders", "onStart");
+    }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+        mGoogleApiClient.disconnect();
     }
 
     private void displayRecyclerView() {
@@ -111,10 +151,15 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
 
     private void setAlarms(ArrayList<ReminderTime> reminders) {
 
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         ArrayList<PendingIntent> intentsArray = new ArrayList<>();
 
         if (!reminders.isEmpty()) {
+
+            sendAlarmTimesToWearable(reminders);
+
+
+
             for (int alarm = 0; alarm < reminders.size(); alarm++) {
 
                 NotificationCompat.Builder n1 = new NotificationCompat.Builder(this)
@@ -137,17 +182,48 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
                 calendar.set(Calendar.MINUTE, time.getMinute());
                 calendar.set(Calendar.SECOND, 0);
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                    Log.d("Reminders", "Alarm set: " + Integer.toString(time.getHour()) + " : " + Integer.toString(time.getMinute()));
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
-                }
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//                    Log.d("Reminders", "Alarm set: " + Integer.toString(time.getHour()) + " : " + Integer.toString(time.getMinute()));
+//                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+//
+//                } else {
+//                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+//                }
 
                 intentsArray.add(pi);
             }
         }
 
+    }
+
+    private void sendAlarmTimesToWearable(ArrayList<ReminderTime> reminders) {
+
+        Log.d(TAG, "sendAlarmTimesToWearable: ");
+
+        ArrayList<DataMap> remindersMap = createDataMapArray(reminders);
+
+        PutDataMapRequest dataMap = PutDataMapRequest.create(WEARABLE_DATA_PATH);
+
+        dataMap.getDataMap().putDataMapArrayList("reminders_map", remindersMap);
+
+        PutDataRequest dataRequest = dataMap.asPutDataRequest();
+
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, dataRequest);
+
+        new SendMessageToDataLayer(WEARABLE_DATA_PATH, dataRequest).start();
+    }
+
+    private ArrayList<DataMap> createDataMapArray(ArrayList<ReminderTime> reminders) {
+
+        ArrayList<DataMap> maps = new ArrayList<>();
+
+        for(ReminderTime reminder : reminders) {
+            maps.add(reminder.getMap());
+        }
+
+        return null;
     }
 
     @Override
@@ -189,4 +265,83 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
         finish();
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient)
+                .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                    @Override
+                    public void onResult(@NonNull NodeApi.GetConnectedNodesResult nodes) {
+                        for (Node node : nodes.getNodes()) {
+                            mNode = node;
+                        }
+                    }
+                });
+        Wearable.DataApi.addListener(mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onDataChanged(DataEventBuffer dataEventBuffer) {
+
+    }
+
+    /**
+     * The type Send message to data layer.
+     */
+    public class SendMessageToDataLayer extends Thread {
+        /**
+         * The Path.
+         */
+        String path;
+        /**
+         * The Put data request.
+         */
+        PutDataRequest putDataRequest;
+
+        /**
+         * Instantiates a new Send message to data layer.
+         *
+         * @param path           the path
+         * @param putDataRequest the put data request
+         */
+        public SendMessageToDataLayer(String path, PutDataRequest putDataRequest) {
+            this.path = path;
+            this.putDataRequest = putDataRequest;
+        }
+
+        @Override
+        public void run() {
+            NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi
+                    .getConnectedNodes(mGoogleApiClient).await();
+
+            // GEt the node we are sending message to
+            for (Node node : nodes.getNodes()) {
+
+                final Node n = nodes.getNodes().get(0);
+                PendingResult<DataItemBuffer> dataResult =
+                        Wearable.DataApi.getDataItems(mGoogleApiClient);
+
+
+                dataResult.setResultCallback(new ResultCallback<DataItemBuffer>() {
+                    @Override
+                    public void onResult(@NonNull DataItemBuffer dataItems) {
+                        Log.d(TAG, "onResult: Item send: " + dataItems.getStatus().isSuccess());
+                        Log.v(TAG, "Data Sent to: " + n.getDisplayName());
+                        Log.v(TAG, "Data Node ID: " + n.getId());
+                        //Log.v(TAG, "Data Nodes Size: " + nodes.getNodes().size());
+                    }
+                });
+
+            }
+        }
+    }
 }

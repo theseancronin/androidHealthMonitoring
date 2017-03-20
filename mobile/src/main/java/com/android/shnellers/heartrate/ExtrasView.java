@@ -3,11 +3,16 @@ package com.android.shnellers.heartrate;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.android.shnellers.heartrate.analysis.DataOverview;
+import com.android.shnellers.heartrate.diary.DiaryEntriesContainer;
+import com.android.shnellers.heartrate.weight.WeightView;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by Sean on 17/01/2017.
@@ -19,6 +24,10 @@ public class ExtrasView extends Activity implements AdapterView.OnItemClickListe
 
     private static final boolean DEBUG = true;
     public static final String REMINDERS = "Reminders";
+    public static final String WEIGHT = "Weight";
+
+    public static final String DIARY_ENTRIES = "Diary Entries";
+    public static final String ANALYSIS = "Analysis";
 
     private ListView mListView;
 
@@ -26,10 +35,13 @@ public class ExtrasView extends Activity implements AdapterView.OnItemClickListe
 
     private String[] extrasList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.extras_layout);
+
+        ButterKnife.bind(this);
 
         extrasList = getResources().getStringArray(R.array.extrasListMenu);
 
@@ -59,7 +71,19 @@ public class ExtrasView extends Activity implements AdapterView.OnItemClickListe
         if (item.equals(REMINDERS)) {
             Intent intent = new Intent(this, Reminders.class);
             startActivity(intent);
+
+        } else if (item.equals(WEIGHT)) {
+            Intent intent = new Intent(this, WeightView.class);
+            startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+        } else if (item.equals(DIARY_ENTRIES)) {
+            Intent intent = new Intent(this, DiaryEntriesContainer.class);
+            startActivity(intent);
+        } else if (item.equals(ANALYSIS)){
+            Intent intent = new Intent(this, DataOverview.class);
+            startActivity(intent);
         }
-        Log.d(TAG, "onItemClick: " + item);
+
     }
 }

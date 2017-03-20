@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.android.shnellers.heartrate.database.MedicationContract;
 import com.android.shnellers.heartrate.database.MedicationDatabase;
 import com.android.shnellers.heartrate.database.MedicationDatabaseHelper;
-import com.android.shnellers.heartrate.fragments.MedicationFragment;
+import com.android.shnellers.heartrate.fragments.MedicationView;
 
 import java.io.Serializable;
 
@@ -85,7 +85,7 @@ public class MedicationActivity extends AppCompatActivity implements Serializabl
 
             Bundle bundle = new Bundle();
             bundle.putString("str", "Hello World");
-            MedicationFragment fragment = new MedicationFragment();
+            MedicationView fragment = new MedicationView();
             fragment.setArguments(bundle);
 
 

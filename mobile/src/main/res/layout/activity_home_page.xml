@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:id="@+id/activity_home_page"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fragments.HomeFragment"
-    android:orientation="vertical"
-    android:background="#dbe8ec"
+
+
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
@@ -15,78 +15,196 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_readings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6"
-        android:layout_margin="16dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_readings"
+        android:layout_centerInParent="true"
+        >
+
+
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+            android:layout_marginTop="16dp">
 
             <LinearLayout
-                android:id="@+id/top_set"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                >
-
-                <Button
-                    android:id="@+id/new_reading_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:text="@string/check"
-                    />
-
-                <Button
-                    android:id="@+id/stats_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:text="@string/stats"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginStart="6dp"
-                    />
-
+                android:gravity="center_horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weight_watcher"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bottom_set"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
-               >
 
-                <Button
-                    android:id="@+id/log_symptoms_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:text="@string/logs"/>
+                <LinearLayout
+                    android:id="@+id/weight_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
 
-                <Button
-                    android:id="@+id/history"
-                    android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/history"
-                    />
+                    >
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/today"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="72kg"
+                        android:textSize="22sp"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/yesterday"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="71kg"
+                        android:textSize="22sp"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/change"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1kg"
+                        android:textSize="22sp"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
 
 
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/environment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/plus_icon"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"/>
+    <!--
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:layout_margin="16dp"
+            >
+
+            <
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true">
+
+                <LinearLayout
+                    android:id="@+id/top_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/new_reading_btn"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:text="@string/check"
+                        />
+
+                    <Button
+                        android:id="@+id/stats_btn"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:text="@string/stats"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bottom_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                   >
+
+                    <Button
+                        android:id="@+id/log_symptoms_btn"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:text="@string/logs"/>
+
+                    <Button
+                        android:id="@+id/history"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/history"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
 
     </RelativeLayout>
 
+-->
 
 
-
-</LinearLayout>
+</RelativeLayout>

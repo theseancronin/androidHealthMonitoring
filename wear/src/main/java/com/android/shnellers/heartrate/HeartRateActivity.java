@@ -1,6 +1,8 @@
 package com.android.shnellers.heartrate;
 
-import android.app.Fragment;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,13 +11,14 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.android.shnellers.heartrate.heart_rate.UserAlertCheck;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -33,12 +36,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static android.content.Context.SENSOR_SERVICE;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.android.shnellers.heartrate.heart_rate.HeartRateService.DATE_TIME;
+import static com.android.shnellers.heartrate.heart_rate.HeartRateService.HEART_RATE;
 
 /**
  * The type Heart rate activity.
  */
-public class HeartRateActivity extends Fragment implements SensorEventListener, View.OnClickListener,
+public class HeartRateActivity extends Activity implements SensorEventListener, View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         DataApi.DataListener{
 
@@ -77,58 +84,53 @@ public class HeartRateActivity extends Fragment implements SensorEventListener, 
 
     private View mView;
 
+    @BindView(R.id.latest_reading_value)
+    TextView mLatestReading;
+
+    @BindView(R.id.status_value)
+    TextView mStatusValue;
+
+
     /**
      *
-     * @param inflater
-     * @param container
      * @param savedInstanceState
-     * @return
      */
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_heart_rate);
 
-        mView = inflater.inflate(R.layout.activity_heart_rate, container, false);
+        ButterKnife.bind(this);
 
-        mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
         mHeartSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
 
-        mResultLabel = (TextView) mView.findViewById(R.id.heart_rate);
-        mTopLabel = (TextView) mView.findViewById(R.id.top_label);
+        mResultLabel = (TextView) findViewById(R.id.heart_rate);
 
-        mHeartBtn = (ImageButton) mView.findViewById(R.id.check_heart_rate);
+        mTopLabel = (TextView) findViewById(R.id.top_label);
+
+        mHeartBtn = (ImageButton) findViewById(R.id.check_heart_rate);
+
         mHeartBtn.setOnClickListener(this);
 
-        mOkBtn = (ImageButton) mView.findViewById(R.id.ok_btn);
-        mCancelBtn = (ImageButton) mView.findViewById(R.id.cancel_btn);
+        mOkBtn = (ImageButton) findViewById(R.id.ok_btn);
+
+        mCancelBtn = (ImageButton) findViewById(R.id.cancel_btn);
 
         mOkBtn.setOnClickListener(this);
+
         mCancelBtn.setOnClickListener(this);
 
         heartSensorActive = false;
 
         sensorReadings = new ArrayList<>();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
-        Log.d(TAG, "onCreateView: ");
-
-        return mView;
-    }
-
-    /**
-     *
-     * @param savedInstanceState
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.d(TAG, "onCreate: ");
 
     }
 
@@ -227,9 +229,12 @@ public class HeartRateActivity extends Fragment implements SensorEventListener, 
      */
     private void startHeartMonitor() {
         mTopLabel.setText(CHECKING);
+
         heartSensorActive = true;
+
         boolean sensorRegistered = mSensorManager.registerListener(
                 this, mHeartSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         Log.d("Sensor Status: ", "Sensor registered: " + (sensorRegistered ? "yes" : "no"));
 
         mCountDownTimer = new CountDownTimer(15000, 500) {
@@ -251,9 +256,13 @@ public class HeartRateActivity extends Fragment implements SensorEventListener, 
      */
     private void stopHeartMonitor() {
         heartSensorActive = false;
+
         mResultLabel.setText("--");
+
         mSensorManager.unregisterListener(this);
+
         Log.d("HearRateSensor", "Stopped");
+
         if (!getSensorReadings().isEmpty()) {
             calculateAverageHeartRate();
         } else {
@@ -280,9 +289,41 @@ public class HeartRateActivity extends Fragment implements SensorEventListener, 
         // Get the date and time of the reading
         long dateTime = System.currentTimeMillis();
 
+        if (excessiveHeartRateDetected(130)) {
+            alertUserOfExcessiveHeartRate(heartRate, dateTime);
+        }
 
         sendMessage(heartRate, dateTime);
         displayResult(heartRate);
+    }
+
+    private void alertUserOfExcessiveHeartRate(int heartRate, long dateTime) {
+
+        Intent intent = new Intent(this, UserAlertCheck.class);
+        intent.putExtra(HEART_RATE, heartRate);
+        intent.putExtra(DATE_TIME, dateTime);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_heart)
+                .setContentTitle("Abnormal heart rate detected")
+                .setContentText(String.valueOf(heartRate) + " bpm detected")
+                .setContentIntent(pi);
+
+        NotificationManagerCompat nm = NotificationManagerCompat.from(this);
+
+        nm.notify(2, notification.build());
+    }
+
+    private boolean excessiveHeartRateDetected(int heartRate) {
+
+        boolean warning = false;
+
+        if ( heartRate <= 40 ||heartRate >= 120) {
+            warning = true;
+        }
+
+        return warning;
     }
 
     /**

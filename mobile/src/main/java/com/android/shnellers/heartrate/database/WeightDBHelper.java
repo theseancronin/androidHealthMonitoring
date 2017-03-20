@@ -10,15 +10,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class WeightDBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 5;
 
     private static final String DB_NAME = "Weight.db";
 
     private static final String CREATE_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + RemindersContract.Columns.TABLE_NAME + " (" +
+            "CREATE TABLE IF NOT EXISTS " + WeightDBContract.WeightEntries.TABLE_NAME + " (" +
                     WeightDBContract.WeightEntries.ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    WeightDBContract.WeightEntries.WEIGHT_COLUMN + " INTEGER, " +
-                    WeightDBContract.WeightEntries.DATE_TIME_COLUMN + " INTEGER);";
+                    WeightDBContract.WeightEntries.WEIGHT_COLUMN + " REAL, " +
+                    WeightDBContract.WeightEntries.TYPE + " VARCHAR, " +
+                    WeightDBContract.WeightEntries.DATE_TIME_COLUMN + " INTEGER, " +
+                    WeightDBContract.WeightEntries.DATE + " DATETIME);";
 
     public WeightDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -32,7 +34,7 @@ public class WeightDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            sqLiteDatabase.execSQL("DROP TABLE IF NOT EXISTS " + WeightDBContract.WeightEntries.TABLE_NAME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WeightDBContract.WeightEntries.TABLE_NAME);
             onCreate(sqLiteDatabase);
         }
     }

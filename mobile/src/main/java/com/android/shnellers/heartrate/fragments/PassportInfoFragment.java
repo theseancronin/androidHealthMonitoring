@@ -101,7 +101,7 @@ public class PassportInfoFragment extends Fragment {
 
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.passportChildContainer);
 
-        if (getArguments().getBoolean(IS_HEADING) == false) {
+        if (!getArguments().getBoolean(IS_HEADING)) {
 
             layout.setBackgroundResource(R.drawable.border_bottom);
 
@@ -111,11 +111,11 @@ public class PassportInfoFragment extends Fragment {
 
         }
 
-        if (getArguments().getBoolean(ADD_MARGIN) == true) {
+        if (getArguments().getBoolean(ADD_MARGIN)) {
             // setTopMargin(layout);
         }
 
-        if (getArguments().getBoolean(PassportContract.Passport.CLICKABLE) == true) {
+        if (getArguments().getBoolean(PassportContract.Passport.CLICKABLE)) {
             setOnClickListener(getArguments().getString(PassportContract.Passport.ON_CLICK_METHOD));
         }
 
@@ -123,7 +123,7 @@ public class PassportInfoFragment extends Fragment {
 
     private void setOnClickListener(final String onClick) {
 
-        if (getArguments().getBoolean(PassportContract.Passport.CLICKABLE) == true) {
+        if (getArguments().getBoolean(PassportContract.Passport.CLICKABLE)) {
             valueTextView.setOnClickListener(new View.OnClickListener() {
 
                 FragmentManager fm = getFragmentManager();

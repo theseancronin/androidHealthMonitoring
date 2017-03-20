@@ -16,5 +16,7 @@ public class HeartRateContract {
         public static final String ID_COLUMN = "id";
         public static final String BPM_COLUMN = "bpm";
         public static final String DATE_TIME_COLUMN = "date_time";
+        public static final String DATE = "date";
+        public static final String TYPE = "type";
     }
 }

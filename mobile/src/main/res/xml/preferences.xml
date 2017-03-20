@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="general_min_pref"
+        android:defaultValue="@integer/general_max_heart_rate"/>
+    <EditTextPreference
+        android:key="general_max_pref"
+        android:defaultValue="@integer/general_max_heart_rate"/>
+    <EditTextPreference
+        android:key="walking_min_pref"
+        android:defaultValue="@integer/walking_min_heart_rate"/>
+    <EditTextPreference
+        android:key="walking_max_pref"
+        android:defaultValue="@integer/walking_max_heart_rate"/>
+    <EditTextPreference
+        android:key="running_min_pref"
+        android:defaultValue="@integer/running_min_heart_rate"/>
+    <EditTextPreference
+        android:key="running_max_pref"
+        android:defaultValue="@integer/running_max_heart_rate"/>
+    <EditTextPreference
+        android:key="cycling_min_pref"
+        android:defaultValue="@integer/cycling_min_heart_rate"/>
+    <EditTextPreference
+        android:key="cycling_max_pref"
+        android:defaultValue="@integer/cycling_max_heart_rate"/>
+
+</PreferenceScreen>

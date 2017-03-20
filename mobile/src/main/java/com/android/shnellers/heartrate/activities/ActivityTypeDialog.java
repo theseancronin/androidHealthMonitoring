@@ -17,9 +17,12 @@ public class ActivityTypeDialog extends Activity implements View.OnClickListener
     public static final String WALKING = "Walking";
     public static final String RUNNING = "Running";
     private static final String CYCLING = "Cycling";
+
     private CardView mWalking;
     private CardView mRunnig;
     private CardView mCycling;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,11 @@ public class ActivityTypeDialog extends Activity implements View.OnClickListener
         mWalking.setOnClickListener(this);
         mRunnig.setOnClickListener(this);
         mCycling.setOnClickListener(this);
+
+
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -42,16 +49,19 @@ public class ActivityTypeDialog extends Activity implements View.OnClickListener
                 Intent walkingIntent = new Intent(this, ActivityStarted.class);
                 walkingIntent.putExtra(WALKING, WALKING);
                 startActivity(walkingIntent);
+                finish();
                 break;
             case R.id.running_card:
                 Intent runningIntent = new Intent(this, ActivityStarted.class);
                 runningIntent.putExtra(RUNNING, RUNNING);
                 startActivity(runningIntent);
+                finish();
                 break;
             case R.id.cycling_card:
                 Intent cyclingIntent = new Intent(this, ActivityStarted.class);
                 cyclingIntent.putExtra(CYCLING, CYCLING);
                 startActivity(cyclingIntent);
+                finish();
                 break;
         }
 

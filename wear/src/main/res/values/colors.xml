@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="activeButton">#3A78AA</color>
+    <color name="inactiveButton">#E8E8E8</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
+    <!--<color name="colorAccent">#ff4081</color> -->
+    <color name="textColorPrimary">#ffffff</color>
+    <color name="textPrimary">#212121</color>
+
+    <color name="dividerColor">#bdbdbd</color>
+
+    <color name="windowBackground">#3c3f41</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#3C6FAC</color>
+    <color name="displayBackground">#ffffff</color>
+    <color name="colorWalk">#8cebff</color>
+    <color name="colorRun">#fa8e9b</color>
+    <color name="colorCycle">#c6ff82</color>
+
+</resources>

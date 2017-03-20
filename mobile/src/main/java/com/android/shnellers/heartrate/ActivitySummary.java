@@ -2,9 +2,9 @@ package com.android.shnellers.heartrate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class ActivitySummary extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class ActivitySummary extends AppCompatActivity {
     private TextView mDistance;
     private TextView mCalories;
 
-    private FloatingActionButton mFinish;
+    private ImageButton mFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class ActivitySummary extends AppCompatActivity {
         setInfoText(mDistance, String.valueOf(distance));
         setInfoText(mCalories, String.valueOf(calories));
 
-        mFinish = (FloatingActionButton) findViewById(R.id.finish);
+        mFinish = (ImageButton) findViewById(R.id.finish);
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

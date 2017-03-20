@@ -1,5 +1,6 @@
 package com.android.shnellers.heartrate.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,32 +13,21 @@ import android.util.Log;
 public class ActivityDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "ActivityDBHelper";
-
-
-
     private String mCreateTable;
-
     private String mTableName;
-
-    private static final String CREATE_RECOGNITION_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + ActivityContract.ActivityEntries.TABLE_RECOGNITION + "( " +
-                    ActivityContract.ActivityEntries.ID_COLUMN + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                    ActivityContract.ActivityEntries.TYPE_COLUMN  + " INTEGER, " +
-                    ActivityContract.ActivityEntries.MINUTES_DETECTED + " INTEGER, " +
-                    ActivityContract.ActivityEntries.MILLISECONDS + " INTEGER," +
-                    ActivityContract.ActivityEntries.DATE_TIME_COLUMN  + " INTEGER);";
 
     private static final String CREATE_ACTIVITIES_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ActivityContract.ActivityEntries.TABLE_NAME + "( " +
                     ActivityContract.ActivityEntries.ID_COLUMN +" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                     ActivityContract.ActivityEntries.TYPE_COLUMN + " VARCHAR, " +
-                    ActivityContract.ActivityEntries.DISTANCE_TRAVELLED_COLUMN + " INTEGER , " +
+                    ActivityContract.ActivityEntries.DISTANCE_TRAVELLED_COLUMN + " DECIMAL(3, 1) , " +
                     ActivityContract.ActivityEntries.START_TIME_COLUMN + " INTEGER, " +
                     ActivityContract.ActivityEntries.END_TIME_COLUMN + " INTEGER, " +
                     ActivityContract.ActivityEntries.TIME_TAKEN_COLUMN + " INTEGER, " +
-                    ActivityContract.ActivityEntries.DATE_TIME_COLUMN + " INTEGER, " +
+                    ActivityContract.ActivityEntries.DATE_TIME_COLUMN + " VARCHAR, " +
                     ActivityContract.ActivityEntries.CALORIES_BURNED_COLUMN +  " INTEGER, " +
-                    ActivityContract.ActivityEntries.STEPS_COLUMN  + "INTEGER);";
+                    ActivityContract.ActivityEntries.STEPS_COLUMN  + " INTEGER," +
+                    ActivityContract.ActivityEntries.FINISHED_COLUMN + " INTEGER);";
 
     public ActivityDBHelper(Context context, final int version,
                             final String tableName, final String dbName) {
@@ -49,7 +39,6 @@ public class ActivityDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d(TAG, "onCreate: CREATING TABLE");
-        sqLiteDatabase.execSQL(CREATE_RECOGNITION_TABLE);
         sqLiteDatabase.execSQL(CREATE_ACTIVITIES_TABLE);
     }
 
@@ -66,4 +55,7 @@ public class ActivityDBHelper extends SQLiteOpenHelper {
     }
 
 
+    public ContentValues getAllActivityRecogitionRecords() {
+        return null;
+    }
 }

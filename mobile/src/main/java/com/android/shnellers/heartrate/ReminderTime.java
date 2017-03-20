@@ -3,6 +3,8 @@ package com.android.shnellers.heartrate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.wearable.DataMap;
+
 /**
  * Created by Sean on 08/01/2017.
  */
@@ -13,12 +15,18 @@ public class ReminderTime implements Parcelable {
 
     private String type;
 
+    private DataMap map;
+
     public ReminderTime(int hour, int minute, int active, int id, String type) {
         setHour(hour);
         setMinute(minute);
         setActive(active);
         setId(id);
         setType(type);
+
+        map = new DataMap();
+
+        createDataMap(hour, minute, active, id, type);
     }
 
     protected ReminderTime(Parcel in) {
@@ -27,6 +35,19 @@ public class ReminderTime implements Parcelable {
         active = in.readInt();
         id = in.readInt();
         type = in.readString();
+    }
+
+    public void createDataMap(int hour, int minute, int active, int id, String type) {
+        map.putInt("hour", getHour());
+        map.putInt("minute", getMinute());
+        map.putInt("active", getActive());
+        map.putInt("id", getId());
+        map.putString("type", getType());
+
+    }
+
+    public DataMap getMap() {
+        return map;
     }
 
     public static final Creator<ReminderTime> CREATOR = new Creator<ReminderTime>() {

@@ -19,4 +19,25 @@
     <string name="walking">Walking</string>
     <string name="new_activity">New Activity</string>
     <string name="latest">Latest</string>
+    <string name="cycle">Cycle</string>
+    <string name="no_distance">0.0</string>
+    <string name="no_calories">0</string>
+    <string name="km">Km</string>
+    <string name="diary">Heart Diary</string>
+    <string name="heart_health">Heart Health</string>
+    <string name="diary_log">Diary</string>
+    <string name="activity">Activity</string>
+    <string name="check_heart_rate">Check Heart Rate</string>
+    <string name="status">Status</string>
+    <string name="ok">OK</string>
+    <string name="bpm">BPM</string>
+    <string name="heart_checker">Auto Heart Checker</string>
+    <string name="excessive_heart_rate">Excessive heart rate detected, are you…</string>
+    <string name="general">General</string>
+    <string name="active">Active</string>
+    <string name="resting">Resting</string>
+
+    <!-- Shared Preference Keys-->
+    <string name="time_interval_set"></string>
+    <string name="hear_rate_check_interval">Heart Rate Check Interval</string>
 </resources>

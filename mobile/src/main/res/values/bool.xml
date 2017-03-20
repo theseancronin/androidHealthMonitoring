@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="general_min_heart_rate">40</integer>
+    <integer name="general_max_heart_rate">105</integer>
+    <integer name="walking_min_heart_rate">40</integer>
+    <integer name="walking_max_heart_rate">120</integer>
+    <integer name="running_min_heart_rate">40</integer>
+    <integer name="running_max_heart_rate">180</integer>
+    <integer name="cycling_min_heart_rate">40</integer>
+    <integer name="cycling_max_heart_rate">180</integer>
+</resources>

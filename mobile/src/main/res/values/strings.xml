@@ -100,11 +100,96 @@
     <string name="cycling">Cycling</string>
     <string name="summary">Summary</string>
     <string name="type">Type</string>
+    <string name="total">Total</string>
+    <string name="auto_detection">Auto Detection</string>
+    <string name="no_minutes">0 min</string>
+    <string name="no_distance">0 km</string>
+    <string name="no_calories">0 cal</string>
+    <string name="latest_activity">Latest Activity</string>
+    <string name="no_type">---</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="weight_watcher">Weight Watcher</string>
+    <string name="change">Change</string>
+    <string name="weight_log">Weight Log</string>
+    <string name="no_steps">0</string>
+    <string name="Dashboard">Dashboard</string>
+    <string name="warnings">Warnings</string>
+    <string name="none">None</string>
+    <string name="feeling">Feeling</string>
+    <string name="passport">Passport</string>
+    <string name="activity">Activity</string>
+    <string name="extra">Extra</string>
+    <string name="low">Low</string>
+    <string name="latest_reading">Latest Reading</string>
+    <string name="status">Status</string>
+    <string name="surname">Surname</string>
+    <string name="first_name">First name</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="enter_weight">Enter Weight</string>
+    <string name="ok">OK</string>
+    <string name="high">High</string>
+    <string name="type_colon">Type:</string>
+    <string name="no_value">--</string>
+    <string name="fluid_accumulation">Fluid Accumulation</string>
+    <string name="kg">kg</string>
+    <string name="feeling_today">How are you feeling?</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="thresholds">Heart Rate Thresholds</string>
+    <string name="height">Height</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="resting">Resting</string>
+    <string name="general">General</string>
+    <string name="total_beats_detected">Total Beats Detected</string>
+    <string name="high_rates">High Rates</string>
+    <string name="extreme_rates">Extreme Rates</string>
+    <string name="highest_rate">Highest BPM</string>
+    <string name="lowest_rate">Lowest BPM</string>
+    <string name="overall_avg">Overall Average</string>
+    <string name="over_one_hundred">100+</string>
+    <string name="over_one_twenty">120+</string>
+    <string name="target">Target</string>
+    <string name="overview">Overview</string>
+    <string name="heart_activity">Heart Activity</string>
+    <string name="deviation">Deviation</string>
+    <string name="frequency_measure">Frequency</string>
+    <string name="average_bpm">Average BPM</string>
+    <string name="breakdown">Breakdown</string>
+    <string name="over_one_twenty_txt"><![CDATA[> 120]]></string>
+    <string name="_100_119over_one_hundred_txt">100 – 119</string>
+    <string name="over_one_hundred_txt">100 – 119</string>
+    <string name="over_eighty_five_txt">85 – 99</string>
+    <string name="less_than_forty_txt"><![CDATA[< 40]]></string>
+    <string name="over_forty_txt">40 – 54</string>
+    <string name="over_fifty_five_txt">55 – 64</string>
+    <string name="over_seventy_txt">70 – 85</string>
+    <string name="amount">Amount</string>
+    <string name="highest_average">Week of Highest Avg</string>
+    <string name="day_highest_average">Day of Highest Avg</string>
+    <string name="seven_day">7-Day</string>
+    <string name="thirty_day">30-Day</string>
+    <string name="all">All</string>
+    <string name="time_colon">Time:</string>
+    <string name="last_24">Last 24</string>
+    <string name="no_concerns">There have been no unusual resting rates observed in the last 24 recordings.</string>
+    <string name="resting_rates_detected">Resting Rates Detected</string>
+    <string name="max_heart_rate">Max Heart Rate</string>
+    <string name="resting_rates_100_bpm">Resting Rates 100+ BPM</string>
+    <string name="km">KM</string>
+    <string name="avg_bpm">Avg BPM</string>
 
     <!-- Extras list menu -->
     <array name="extrasListMenu">
         <item>Reminders</item>
         <item>Weight</item>
+        <item>Diary Entries</item>
+        <item>Analysis</item>
+        <item>Settings</item>
     </array>
 
     <!-- Reminder type list -->
@@ -115,4 +200,49 @@
         <item>Weight</item>
     </string-array>
 
+    <!-- Reminder type list -->
+    <string-array name="weight_types">
+        <item>kg</item>
+        <item>Pounds</item>
+    </string-array>
+
+    <!-- Date selection type list -->
+    <string-array name="date_type_selection">
+        <item>Custom Date</item>
+        <item>Today</item>
+        <item>7-Day</item>
+        <item>30-Day</item>
+        <item>All Time</item>
+    </string-array>
+
+    <!-- Date selection type list -->
+    <string-array name="date_selection">
+        <item>Today</item>
+        <item>7-Day</item>
+        <item>30-Day</item>
+        <item>All Time</item>
+    </string-array>
+
+    <!-- Date selection type list -->
+    <string-array name="timeline_spinner">
+        <item>7-Day</item>
+        <item>30-Day</item>
+        <item>All Time</item>
+    </string-array>
+
+    <!-- Activity to display selection list -->
+    <string-array name="activity_selection">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Cycling</item>
+        <item>Resting</item>
+        <item>General</item>
+    </string-array>
+
+    <!-- Activity to display selection list -->
+    <string-array name="min_max_avg">
+        <item>Min Heart Rate</item>
+        <item>Max Heart Rate</item>
+        <item>Avg Heart Rate</item>
+    </string-array>
 </resources>

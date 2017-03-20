@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+    android:padding="16dp"
+    android:background="@drawable/layout_box_border">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/feeling_today"
+        android:padding="8dp"/>
+
+    <View
+        android:layout_width="150dp"
+        android:layout_height="1dp"
+        android:background="@color/dividerColor" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:padding="8dp">
+
+            <ImageButton
+                android:id="@+id/icon_sad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sad"
+                android:background="#ffffff"
+                android:layout_marginEnd="8dp"
+                android:padding="5dp"/>
+
+            <ImageButton
+                android:id="@+id/icon_not_good"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_not_good"
+                android:background="#ffffff"
+                android:layout_marginEnd="8dp"
+                android:padding="5dp"/>
+
+            <ImageButton
+                android:id="@+id/icon_neutral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_neutral"
+                android:background="#ffffff"
+                android:layout_marginEnd="8dp"
+                android:padding="5dp"/>
+
+
+            <ImageButton
+                android:id="@+id/icon_good"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_good"
+                android:background="#ffffff"
+                android:layout_marginEnd="8dp"
+                android:padding="5dp"/>
+
+
+            <ImageButton
+                android:id="@+id/icon_happy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_happy"
+                android:background="#ffffff"
+                android:padding="5dp"/>
+        </LinearLayout>
+
+</LinearLayout>

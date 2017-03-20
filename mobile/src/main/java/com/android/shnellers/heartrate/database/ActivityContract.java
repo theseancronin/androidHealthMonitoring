@@ -25,8 +25,16 @@ public class ActivityContract {
 
         public static final String TABLE_RECOGNITION = "activities_recognised";
         public static final String MINUTES_DETECTED = "minutes";
-        public static final String MILLISECONDS = "milliseconds";
+        public static final String SECONDS = "seconds";
 
+        public static final String FINISHED_COLUMN = "finished";
+
+        public static final String TIME_MAP = "timeMap";
+        public static final String HOURS = "hours";
+        public static final String MINUTES = "minutes";
+
+        public static final String ACTIVE = "active";
+        public static final String ACTIVITY_NUMBER = "activity_number";
     }
 
 }

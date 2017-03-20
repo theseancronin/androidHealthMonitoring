@@ -4,9 +4,13 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.BODY_SENSORS"/>
+
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +21,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
+        <meta-data android:name="android.support.VERSION" android:value="25.3.0" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -75,11 +80,12 @@
             android:theme="@android:style/Theme.Material.Light.Dialog.NoActionBar"/>
         <activity
             android:name=".activities.ActivityStarted"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme"/>
         <activity android:name=".active">
         </activity>
 
         <service android:name=".activities.ActivityRecognitionService"/>
+        <service android:name=".activities.HeartCheckActivityRecognitionService"/>
         <service android:name=".SensorReceiveService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
@@ -106,10 +112,48 @@
             android:process=":remote"/>
 
         <activity
-            android:name=".ActivitySummary"
+            android:name=".activities.ActivityEndSummary"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Material.Light.Dialog.NoActionBar">
         </activity>
+
+        <activity
+            android:name=".views.weight.WeightLog"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Material.Light.Dialog.NoActionBar">
+        </activity>
+
+        <activity android:name=".activities.ActivityDashboard"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.ActivityHome"
+                  android:theme="@style/AppTheme" />
+
+        <activity android:name=".passport.PassportMain"
+                  android:theme="@style/AppTheme" />
+
+        <activity android:name=".diary.DiaryEntriesContainer" />
+
+        <activity android:name=".diary.DiaryEntriesDescription" />
+
+        <activity android:name=".weight.WeightView" />
+
+        <activity android:name=".settings.SettingsView" />
+
+        <activity android:name=".analysis.DataAnalysisMain"/>
+
+        <activity android:name=".analysis.DataOverview"/>
+
+        <activity android:name=".analysis.ClusterAnalysis" />
+
+        <activity android:name=".heart_rate.History"/>
+
+        <receiver android:name=".database.HeartDBReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.shnellers.heartrate.DB_CHANGED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

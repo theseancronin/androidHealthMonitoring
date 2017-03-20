@@ -27,6 +27,10 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.List;
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by Sean on 02/11/2016.
  */
@@ -65,6 +69,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private RecyclerView.LayoutManager mLayoutManager;
 
 
+
+    @BindView(R.id.environment) FloatingActionButton mEnvironment;
+
     private View mView;
 
     private HeartRateDatabase mHeartRateDatabase;
@@ -84,6 +91,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.recycler_readings);
         mRecyclerView.setHasFixedSize(true);
 
+
+
+
         mLayoutManager = new LinearLayoutManager(getActivity());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -95,7 +105,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         mHeartRateDatabase = new HeartRateDatabase(getActivity());
 
-//
+        ButterKnife.bind(this, mView);
 
         Description desc = new Description();
         desc.setText("");
@@ -139,6 +149,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onStop() {
         super.onStop();
     }
+
+    /**
+     *
+     */
+    @OnClick(R.id.environment)
+    public void inflateEnvironmentList() {
+        Intent intent = new Intent(getActivity(), ExtrasView.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public void onClick(View view) {

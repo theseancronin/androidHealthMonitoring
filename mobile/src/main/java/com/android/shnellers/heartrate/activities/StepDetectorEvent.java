@@ -131,7 +131,7 @@ public class StepDetectorEvent extends Service implements SensorEventListener
                         boolean isNotContra = (mLastMatch != 1 - extType);
 
                         if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
-                            Log.i(TAG, "step");
+                            //Log.i(TAG, "step");
                             for (StepListener stepListener : mStepListeners) {
                                 stepListener.onStep();
                             }

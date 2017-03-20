@@ -2,12 +2,35 @@
 <resources>
     <color name="activeButton">#3A78AA</color>
     <color name="inactiveButton">#E8E8E8</color>
-    <color name="colorPrimary">#3B8298</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
     <!--<color name="colorAccent">#ff4081</color> -->
     <color name="textColorPrimary">#ffffff</color>
-    <color name="windowBackground">#dbe8ec</color>
+    <color name="textPrimary">#212121</color>
+
+    <color name="dividerColor">#bdbdbd</color>
+
+    <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#3b9880</color>
-    <color name="displayBackground">#DBE8EC</color>
+    <color name="colorAccent">#4CAF50</color>
+    <color name="displayBackground">#ffffff</color>
+    <color name="colorWalk">#8cebff</color>
+    <color name="colorRun">#fa8e9b</color>
+    <color name="colorCycle">#c6ff82</color>
+
+    <color name="resting">#1197FF</color>
+    <color name="cycling">#FF9911</color>
+    <color name="running">#FF0086</color>
+    <color name="walking">#6819FF</color>
+    <color name="general">#00FFB2</color>
+
+    <color name="over_120">#FF1D11</color>
+    <color name="over_100">#FF9911</color>
+    <color name="over_85">#FFD211</color>
+    <color name="over_70">#51FF11</color>
+    <color name="over_55">#2874FF</color>
+    <color name="over_40">#15E2FF</color>
+    <color name="less_than_40">#D717FF</color>
+
 </resources>
