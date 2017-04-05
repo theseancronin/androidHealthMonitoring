@@ -2,7 +2,7 @@
 <resources>
     <color name="activeButton">#3A78AA</color>
     <color name="inactiveButton">#E8E8E8</color>
-    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimary">#009587</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorPrimaryLight">#B2DFDB</color>
     <!--<color name="colorAccent">#ff4081</color> -->
@@ -13,24 +13,24 @@
 
     <color name="windowBackground">#ffffff</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#4CAF50</color>
+    <color name="colorAccent">#00786a</color>
     <color name="displayBackground">#ffffff</color>
     <color name="colorWalk">#8cebff</color>
     <color name="colorRun">#fa8e9b</color>
     <color name="colorCycle">#c6ff82</color>
 
-    <color name="resting">#1197FF</color>
-    <color name="cycling">#FF9911</color>
-    <color name="running">#FF0086</color>
+    <color name="resting">#096199</color>
+    <color name="cycling">#F07B00</color>
+    <color name="running">#CB0059</color>
     <color name="walking">#6819FF</color>
-    <color name="general">#00FFB2</color>
+    <color name="general">#018B91</color>
 
     <color name="over_120">#FF1D11</color>
     <color name="over_100">#FF9911</color>
     <color name="over_85">#FFD211</color>
-    <color name="over_70">#51FF11</color>
+    <color name="over_70">#00AA4F</color>
     <color name="over_55">#2874FF</color>
-    <color name="over_40">#15E2FF</color>
+    <color name="over_40">#018B91</color>
     <color name="less_than_40">#D717FF</color>
 
 </resources>

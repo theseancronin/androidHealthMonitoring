@@ -453,8 +453,8 @@ public class DataAnalysis extends Fragment {
 
             ed.setTimeInMillis(endDate.getTime());
 
-            ratesMap = mDatabase.getRecordsBetweenDates(format.format(startDate.getTime()),
-                                            format.format(endDate.getTime()), SELECT_ALL);
+            ratesMap = mDatabase.getRecordsBetweenDates(startDate.getTime(),
+                                            endDate.getTime(), SELECT_ALL);
 
             dates = DateHelper.getDatesBetween(format.format(startDate.getTime()),
                     format.format(endDate.getTime()), format);
@@ -478,8 +478,8 @@ public class DataAnalysis extends Fragment {
 
                 if (minDate != null || maxDate != null) {
                     ratesMap = mDatabase.getRecordsBetweenDates(
-                            minDate != null ? format.format(minDate.getTime()) : null,
-                            maxDate != null ? format.format(maxDate.getTime()) : null,
+                            minDate != null ? minDate.getTime() : null,
+                            maxDate != null ? maxDate.getTime() : null,
                             SELECT_ALL
                     );
                 }

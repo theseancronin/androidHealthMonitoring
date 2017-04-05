@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="0.6"
         android:layout_marginBottom="16dp">
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/weight_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -22,28 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="Your weight has increases by 0.5 kgs in the last 7 days."
+        android:text="No weights logged to analyse"
         android:textSize="18sp"
         android:layout_marginBottom="8dp"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="7 Day Status:"
-            android:layout_marginEnd="5dp"/>
-
-        <TextView
-            android:id="@+id/seven_day_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Suspicious Change"/>
-    </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"

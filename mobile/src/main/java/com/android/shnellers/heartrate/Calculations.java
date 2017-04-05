@@ -35,7 +35,6 @@ public class Calculations {
      */
     public static double convertTimeToKM(final int activity, final int minutes) {
 
-
         double km = 0;
         double miles = 0;
         double milesAMinute = 0;
@@ -96,7 +95,7 @@ public class Calculations {
                                         final int heartRate, final int time) {
         // double burned =  ((age * 0.2017) - (weight * 0.09036) +
         //         (heartRate * 0.6309) - 55.0969) * time / 4.184;
-        double burned = ((age * 0.074) - (weight * 0.05741) + (heartRate * 0.4472) - 55.0969)
+        double burned = ((age * 0.074) - (weight * 0.05741) + (heartRate * 0.4472) - 20.4022)
                 * (time / 4.184);
         Log.d(TAG, "caloriesBurnedMen: " + String.valueOf(burned));
         return (int) burned;
@@ -135,7 +134,7 @@ public class Calculations {
      * @param age
      * @return
      */
-    public HashMap<String, Integer> targetHeartRate(int activityLevel, int age) {
+    public static HashMap<String, Integer> targetHeartRate(int activityLevel, int age) {
 
         int maxHeartRate = 220 - age;
         int low = 0;
@@ -161,11 +160,11 @@ public class Calculations {
 
     }
 
-    private boolean isVigerousIntensity(int activityLevel) {
+    private static boolean isVigerousIntensity(int activityLevel) {
         return activityLevel == 2;
     }
 
-    private boolean isModerateIntensity(int activityLevel) {
+    private static boolean isModerateIntensity(int activityLevel) {
         return activityLevel == 1;
     }
 
@@ -184,5 +183,56 @@ public class Calculations {
         double percentage = (v / s) * 100;
 
         return (int) percentage;
+    }
+
+    /**
+     * Get the string value of the given type.
+     *
+     * @param type
+     * @return
+     */
+    public static String getType(int type) {
+
+        String typeStr = "";
+
+        if (type == DetectedActivity.WALKING) {
+            typeStr = "walk";
+        } else if (type == DetectedActivity.RUNNING) {
+            typeStr = "run";
+        } else if (type == DetectedActivity.ON_BICYCLE) {
+            typeStr = "cycle";
+        }
+
+
+        return typeStr;
+    }
+
+    /**
+     *
+     *
+     * @param todaysWeight
+     * @return
+     */
+    public static double bmiCalculator(final float todaysWeight) {
+
+        double bmi = 0;
+        int height = 155;
+
+        Log.d(TAG, "bmiCalculator: " + String.valueOf(todaysWeight));
+        if (todaysWeight > 0.0) {
+            Log.d(TAG, "CALCULATING");
+            DecimalFormat oneDigit = new DecimalFormat("#,##0.0");//format to 1 decimal place
+
+            double heightMetres = 155 * 0.01;
+
+            bmi = (double) todaysWeight / (heightMetres * heightMetres);
+            Log.d(TAG, "heightM: " + String.valueOf(heightMetres));
+            Log.d(TAG, "BMI: " + String.valueOf(bmi));
+
+            return Double.valueOf(oneDigit.format(bmi));
+        } else {
+            return -1;
+        }
+
     }
 }

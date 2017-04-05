@@ -9,12 +9,12 @@
                 android:width="1dp"
                 android:color="#C4CDE0" >
             </stroke>
-            <solid android:color="#EDEFF5" />
+
             <corners
                 android:bottomLeftRadius="0dp"
                 android:bottomRightRadius="0dp"
-                android:topLeftRadius="5dp"
-                android:topRightRadius="5dp" />
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
         </shape>
     </item>
 

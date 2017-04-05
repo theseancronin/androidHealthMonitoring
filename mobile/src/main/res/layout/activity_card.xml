@@ -4,7 +4,10 @@
     android:id="@+id/activity_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_weight="1"
     >
 
@@ -68,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/no_value"
-                        android:textSize="44sp"
+                        android:textSize="30sp"
                         android:textColor="@color/walking"
                         android:layout_gravity="center_horizontal"/>
                     <TextView

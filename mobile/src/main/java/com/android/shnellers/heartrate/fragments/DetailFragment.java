@@ -15,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.shnellers.heartrate.EditBasicDetails;
 import com.android.shnellers.heartrate.PassportContract;
 import com.android.shnellers.heartrate.R;
+
+import static com.android.shnellers.heartrate.R.drawable.border_bottom;
+import static com.android.shnellers.heartrate.R.drawable.border_bottom_2;
 
 
 /**
@@ -89,11 +91,11 @@ public class DetailFragment extends Fragment {
 
         if (!getArguments().getBoolean(IS_HEADING)) {
 
-            layout.setBackgroundResource(R.drawable.border_bottom);
+            layout.setBackgroundResource(border_bottom);
 
         } else {
-
-            layout.setBackgroundResource(R.drawable.text_view_heading);
+            layout.setBackgroundResource(border_bottom_2);
+            //layout.setBackgroundResource(R.drawable.text_view_heading);
 
         }
 
@@ -107,7 +109,7 @@ public class DetailFragment extends Fragment {
 
     }
 
-    private void setOnClickListener(final String onClick) {
+    private void setOnClickListener(final String val) {
 
         if (getArguments().getBoolean(PassportContract.Passport.CLICKABLE)) {
             valueTextView.setOnClickListener(new View.OnClickListener() {
@@ -116,59 +118,37 @@ public class DetailFragment extends Fragment {
                 FragmentTransaction ft = fm.beginTransaction();
                 Bundle args = new Bundle();
 
+
+
                 @Override
                 public void onClick(View v) {
-                    switch (onClick) {
+                    System.out.println("S: " + val);
+                    switch (val) {
+
                         case PassportContract.Passport.EDIT_BASIC_DETAILS:
 
                             Intent editBasicIntent = new Intent(getActivity(), EditPassportBasicDetails.class);
-                            getActivity().startActivity(editBasicIntent);
-
-                          //  EditBasicDetails ebd = new EditBasicDetails();
-
-//                            args.putString(
-//                                    PassportContract.Passport.EDIT_DETAIL,
-//                                    PassportContract.Passport.EDIT_BASIC_DETAILS
-//                            );
-//                            ebd.setArguments(args);
-//
-//                            ft.add(R.id.passportEditRootFragment, ebd);
-//                            ft.addToBackStack(null);
-//
-//                            ft.commit();
-
-
+                            startActivity(editBasicIntent);
 
                             Log.i("Editing Details", "Worked!!");
                             break;
                         case PassportContract.Passport.EDIT_NEXT_OF_KIN:
-                            Intent intent = new Intent(getActivity(), EditPassportKin.class);
-                            getParentFragment().startActivityForResult(intent, 999);
+                            Intent editKin = new Intent(getActivity(), EditPassportKin.class);
+                            startActivity(editKin);
 //
                             break;
 
                         case PassportContract.Passport.EDIT_GP_DETAILS:
                             Intent gpIntent = new Intent(getActivity(), EditPassportGP.class);
-                            getActivity().startActivity(gpIntent);
+                            startActivity(gpIntent);
 
                             Log.i("Editing GP", "Worked!!");
                             break;
 
                         case PassportContract.Passport.EDIT_PHARMACY_DETAILS:
-                            EditBasicDetails pharmacyDetails = new EditBasicDetails();
+                            Intent pharmacy = new Intent(getActivity(), EditPharmacy.class);
+                            startActivity(pharmacy);
 
-                            args.putString(
-                                    PassportContract.Passport.EDIT_DETAIL,
-                                    PassportContract.Passport.EDIT_PHARMACY_DETAILS
-                            );
-
-                            pharmacyDetails.setArguments(args);
-
-                            ft.add(R.id.passportEditRootFragment, pharmacyDetails);
-                            ft.addToBackStack(null);
-                            ft.commit();
-
-                            Log.i("Editing Pharmacy", "Worked!!");
                             break;
                     }
                 }
@@ -178,13 +158,6 @@ public class DetailFragment extends Fragment {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-        Log.d(TAG, "onActivityResult");
-    }
 
 
 

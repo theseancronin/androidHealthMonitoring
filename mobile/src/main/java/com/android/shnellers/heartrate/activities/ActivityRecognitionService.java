@@ -1,15 +1,19 @@
 package com.android.shnellers.heartrate.activities;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.shnellers.heartrate.Constants;
 import com.android.shnellers.heartrate.database.ActivityRecognitionDatabase;
+import com.android.shnellers.heartrate.database.HeartRateDBHelper;
+import com.android.shnellers.heartrate.database.HeartRateDatabase;
+import com.android.shnellers.heartrate.models.HeartRateObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -31,6 +35,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
+
+import static com.android.shnellers.heartrate.Constants.Const.CYCLING;
+import static com.android.shnellers.heartrate.Constants.Const.GENERAL;
+import static com.android.shnellers.heartrate.Constants.Const.RESTING;
+import static com.android.shnellers.heartrate.Constants.Const.RUNNING;
+import static com.android.shnellers.heartrate.Constants.Const.WALKING;
+import static com.android.shnellers.heartrate.database.HeartRateContract.Entry.ID_COLUMN;
+import static com.android.shnellers.heartrate.database.HeartRateContract.Entry.TABLE_NAME;
+import static com.android.shnellers.heartrate.database.HeartRateContract.Entry.TYPE;
 
 /**
  * Created by Sean on 20/01/2017.
@@ -55,7 +68,13 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
 
     private GoogleApiClient mGoogleApiClient;
 
+    private GoogleApiClient client;
+
     private Node mNode;
+
+
+    private String mNodeId;
+
 
     public ActivityRecognitionService() {
         super(TAG);
@@ -69,8 +88,6 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
      */
     public ActivityRecognitionService(String name) {
         super(name);
-
-
     }
 
     @Override
@@ -90,66 +107,78 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent: ");
+       // Log.d(TAG, "onHandleIntent: ");
 
         if (ActivityRecognitionResult.hasResult(intent)) {
 
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             if (intent.getStringExtra("intentType").equals("AutoRecognition")) {
-                Log.d(TAG, "onHandleIntent: AUTO RECOGNITION");
+               // Log.d(TAG, "onHandleIntent: AUTO RECOGNITION");
                 handleDetectedActivities(result.getProbableActivities());
             }
 
             if (intent.getStringExtra("intentType").equals("HeartCheckActivity")) {
-                Log.d(TAG, "onHandleIntent: HEART CHECK");
-                handleHeartRateCheckActivity(result.getProbableActivities());
+                //Log.d(TAG, "onHandleIntent: HEART CHECK");
+                handleHeartRateCheckActivity(result.getProbableActivities(), intent);
             }
         }
     }
 
-    private void handleHeartRateCheckActivity(List<DetectedActivity> probableActivities) {
+    private void handleHeartRateCheckActivity(List<DetectedActivity> probableActivities, Intent intent) {
+
+        String result = "";
+
         for (DetectedActivity activity : probableActivities)
             switch (activity.getType()) {
                 case DetectedActivity.WALKING:
                     if (activity.getConfidence() >= 50) {
-                        createActivityEntry(DetectedActivity.WALKING);
-
+                        //createActivityEntry(DetectedActivity.WALKING);
+                        result = WALKING;
                     }
                     break;
                 case DetectedActivity.RUNNING:
                     if (activity.getConfidence() >= 50) {
-                        createActivityEntry(DetectedActivity.RUNNING);
+                        //createActivityEntry(DetectedActivity.RUNNING);
+                        result = RUNNING;
                     }
                     break;
                 case DetectedActivity.ON_BICYCLE:
                     if (activity.getConfidence() >= 50) {
-                        createActivityEntry(DetectedActivity.ON_BICYCLE);
+                        //createActivityEntry(DetectedActivity.ON_BICYCLE);
+                        result = CYCLING;
                     }
                     break;
                 case DetectedActivity.STILL:
                     if (activity.getConfidence() >= 50) {
-                        createActivityEntry(DetectedActivity.ON_BICYCLE);
+                        createActivityEntry(DetectedActivity.STILL);
                        // checkHeartRate(Constants.Const.RESTING);
+                        result = RESTING;
                     }
                     break;
-            }
+                default:
+                    result = GENERAL;
+                    break;
+        }
+
+        long dateTime = intent.getLongExtra("dateOfCheck", -1);
+
+        HeartRateObject hr = new HeartRateDatabase(this).getLatestHeartRate();
+
+        SQLiteDatabase dbs = new HeartRateDBHelper(this).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(TYPE, result);
+
+        dbs.update(TABLE_NAME, values, ID_COLUMN + " = " + hr.getId() + ";", null);
+
+        dbs.close();
+
+        //getApplication().sendBroadcast(new Intent(ActivityRecognitionReceiver.ACTIVITY_RECOGNIZED).putExtra(ACTIVITY, result));
+        stopSelf();
     }
 
-    private void checkHeartRate (String activity) {
 
-        Log.d(TAG, "CHECK HEART RATE: ");
-
-        PutDataMapRequest dataMap = PutDataMapRequest.create(HEART_RATE_DATA_PATH);
-
-        dataMap.getDataMap().putString(CHECK_HEART_RATE, activity);
-
-        PutDataRequest dataRequest = dataMap.asPutDataRequest();
-
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, dataRequest);
-
-        new SendMessageToDataLayer(HEART_RATE_DATA_PATH, dataRequest).start();
-    }
 
     /**
      * Takes as argument a list of activities that have been detected and their
@@ -166,27 +195,48 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
                 case DetectedActivity.WALKING:
                     if (activity.getConfidence() >= 50) {
                         createActivityEntry(DetectedActivity.WALKING);
-                        checkHeartRate(Constants.Const.WALKING);
+                        checkHeartRate(WALKING);
                     }
                     break;
                 case DetectedActivity.RUNNING:
                     if (activity.getConfidence() >= 50) {
                         createActivityEntry(DetectedActivity.RUNNING);
+                        checkHeartRate(RUNNING);
                     }
                     break;
                 case DetectedActivity.ON_BICYCLE:
                     if (activity.getConfidence() >= 50) {
                         createActivityEntry(DetectedActivity.ON_BICYCLE);
+                        checkHeartRate(CYCLING);
                     }
                     break;
                 case DetectedActivity.STILL:
-                    if (activity.getConfidence() >= 50) {
-                        createActivityEntry(DetectedActivity.STILL);
-                        checkHeartRate(Constants.Const.RESTING);
-                    }
+                   // Log.d(TAG, "SENDING BROADCAST");
+
                     break;
             }
         }
+    }
+
+    /**
+     * Checks the heart rate each time an activity is detected.
+     *
+     * @param activity
+     */
+    private void checkHeartRate (String activity) {
+
+        PutDataMapRequest dataMap = PutDataMapRequest.create(HEART_RATE_DATA_PATH);
+
+        dataMap.getDataMap().putString(CHECK_HEART_RATE, activity);
+        dataMap.getDataMap().putString("hello", "hello gear live");
+
+        PutDataRequest dataRequest = dataMap.asPutDataRequest();
+
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, dataRequest);
+
+        new SendMessageToDataLayer(HEART_RATE_DATA_PATH, dataRequest, activity).start();
+
     }
 
     private void createActivityEntry(int activityType) {
@@ -207,7 +257,7 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
 
         int timeInSeconds = hourInSeconds + minInSeconds + seconds;
 
-        Log.d(TAG, "createActivityEntry: CALENDAR:" + String.valueOf(timeInSeconds));
+       // Log.d(TAG, "createActivityEntry: CALENDAR:" + String.valueOf(timeInSeconds));
         long time = System.currentTimeMillis();
         db.createActivityEntry(activityType, timeInSeconds, time);
 
@@ -215,15 +265,6 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient)
-                .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                    @Override
-                    public void onResult(@NonNull NodeApi.GetConnectedNodesResult nodes) {
-                        for (Node node : nodes.getNodes()) {
-                            mNode = node;
-                        }
-                    }
-                });
         Wearable.DataApi.addListener(mGoogleApiClient, this);
     }
 
@@ -255,15 +296,19 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
          */
         PutDataRequest putDataRequest;
 
+        String activity;
+
         /**
          * Instantiates a new Send message to data layer.
-         *
-         * @param path           the path
+         *  @param path           the path
          * @param putDataRequest the put data request
+         * @param activity
          */
-        public SendMessageToDataLayer(String path, PutDataRequest putDataRequest) {
+        public SendMessageToDataLayer(String path, PutDataRequest putDataRequest, String activity) {
             this.path = path;
             this.putDataRequest = putDataRequest;
+            this.activity = activity;
+
             Log.d(TAG, "SendMessageToDataLayer: ");
         }
 
@@ -280,14 +325,15 @@ public class ActivityRecognitionService extends IntentService implements GoogleA
                 PendingResult<DataItemBuffer> dataResult =
                         Wearable.DataApi.getDataItems(mGoogleApiClient);
 
+                String message = HEART_RATE_DATA_PATH + "," + activity;
+                if (activity != null) {
+                    Wearable.MessageApi.sendMessage(mGoogleApiClient, n.getId(), message, null);
+                }
 
                 dataResult.setResultCallback(new ResultCallback<DataItemBuffer>() {
                     @Override
                     public void onResult(@NonNull DataItemBuffer dataItems) {
                         Log.d(TAG, "onResult: Item send: " + dataItems.getStatus().isSuccess());
-                        Log.v(TAG, "Data Sent to: " + n.getDisplayName());
-                        Log.v(TAG, "Data Node ID: " + n.getId());
-                        //Log.v(TAG, "Data Nodes Size: " + nodes.getNodes().size());
                     }
                 });
 

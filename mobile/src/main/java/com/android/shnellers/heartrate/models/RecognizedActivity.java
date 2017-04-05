@@ -11,12 +11,22 @@ public class RecognizedActivity {
     private int seconds;
     private int type;
     private String date;
+    private long dateTimeMls;
 
-    public RecognizedActivity(int hours, int minutes, final int type, final String date) {
+    public RecognizedActivity(int hours, int minutes, final int type, final String date, final long dateTimeMls) {
         this.hours = hours;
         this.minutes = minutes;
         this.type = type;
         this.date = date;
+        this.dateTimeMls = dateTimeMls;
+    }
+
+    public long getDateTimeMls() {
+        return dateTimeMls;
+    }
+
+    public void setDateTimeMls(final long dateTimeMls) {
+        this.dateTimeMls = dateTimeMls;
     }
 
     public int getHours() {

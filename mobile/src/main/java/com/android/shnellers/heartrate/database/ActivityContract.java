@@ -35,6 +35,7 @@ public class ActivityContract {
 
         public static final String ACTIVE = "active";
         public static final String ACTIVITY_NUMBER = "activity_number";
+        public static final String TIME_MILLIS = "time_milliseconds";
     }
 
 }

@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.android.shnellers.heartrate.heart_rate.HeartRateService;
+import com.android.shnellers.heartrate.heart_rate.HeartRateHome;
 import com.android.shnellers.heartrate.heart_rate.HeartRateServiceStarter;
 import com.android.shnellers.heartrate.voice_recorder.DiaryLog;
 
@@ -56,6 +56,8 @@ public class WearMainActivity extends WearableActivity implements View.OnClickLi
     private ViewPager mViewPager;
 
     private SharedPreferences mPreferences;
+
+    private String mNodeId;
 
     @BindView(R.id.btn_heart_health)
     ImageButton mHeartHealthBtn;
@@ -121,16 +123,17 @@ public class WearMainActivity extends WearableActivity implements View.OnClickLi
 
     private void startHeartRateMonitoring() {
         Log.d(TAG, "SETTING ALL DAY MONITORING");
-        Intent myIntent = new Intent(this, HeartRateService.class);
+        Intent myIntent = new Intent(this, HeartRateServiceStarter.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,  0, myIntent, 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        int interval = 1000 * 60;
+        long interval = 60000 * 7;
 
         /* Set the alarm to start at 10:30 AM */
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.MINUTE, 1);
 
         /* Repeating on every 20 minutes interval */
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
@@ -142,6 +145,9 @@ public class WearMainActivity extends WearableActivity implements View.OnClickLi
 //                frequency, pendingIntent);
 
     }
+
+
+
 
     private void setAutomaticHeartRateCheck() {
 
@@ -181,7 +187,7 @@ public class WearMainActivity extends WearableActivity implements View.OnClickLi
 
     @OnClick(R.id.btn_heart_health)
     public void checkHeartRate() {
-        Intent intent = new Intent(this, HeartRateActivity.class);
+        Intent intent = new Intent(this, HeartRateHome.class);
         startActivity(intent);
     }
 

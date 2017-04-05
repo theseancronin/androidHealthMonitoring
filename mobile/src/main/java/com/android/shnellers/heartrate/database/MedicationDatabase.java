@@ -12,6 +12,8 @@ import com.android.shnellers.heartrate.Medication;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.shnellers.heartrate.database.MedicationContract.MedicationEntry._ID;
+
 /**
  * Created by Sean on 29/10/2016.
  */
@@ -126,6 +128,7 @@ public class MedicationDatabase {
                 Log.i("MED NAME", meds.getString(name));
 
                 m.add(new Medication(
+                        meds.getInt(meds.getColumnIndex(_ID)),
                         meds.getString(name),
                         meds.getInt(strength),
                         meds.getInt(frequency)));

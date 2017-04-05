@@ -23,6 +23,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import static com.android.shnellers.heartrate.Constants.Const.AVG;
+import static com.android.shnellers.heartrate.Constants.Const.DEFAULT_NO_VALUE;
+import static com.android.shnellers.heartrate.Constants.Const.GENERAL;
+import static com.android.shnellers.heartrate.Constants.Const.LESS_THAN_40;
+import static com.android.shnellers.heartrate.Constants.Const.MAX_CAPITAL_M;
+import static com.android.shnellers.heartrate.Constants.Const.MIN;
+import static com.android.shnellers.heartrate.Constants.Const.OVER_100;
+import static com.android.shnellers.heartrate.Constants.Const.RESTING;
+import static com.android.shnellers.heartrate.Constants.Const.RESTING_RATES;
+import static com.android.shnellers.heartrate.Constants.Const.TOTAL_COUNT;
+import static com.android.shnellers.heartrate.database.HeartRateContract.Entry.BPM_COLUMN;
+import static com.android.shnellers.heartrate.database.HeartRateContract.Entry.DATE_TIME_COLUMN;
+
 /**
  * Created by Sean on 15/01/2017.
  */
@@ -31,9 +44,11 @@ public class HeartRateDatabase {
 
     public static final String TAG = "HeartRateDatabase";
 
+
     private static final boolean DEBUG = false;
     public static final String HEART_RATE = "heart_rate";
     public static final String STATUS = "status";
+
 
     private SQLiteDatabase _db;
 
@@ -68,6 +83,8 @@ public class HeartRateDatabase {
         _db.insert(HeartRateContract.Entry.TABLE_NAME, null, values);
         close();
 
+        context.sendBroadcast(new Intent(HeartDBReceiver.HEART_DB_CHANGED));
+
         if (DEBUG) Log.d(TAG, "storeHeartRate: ");
     }
 
@@ -76,7 +93,7 @@ public class HeartRateDatabase {
 
         Cursor readings = _db.rawQuery(
                 "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " ORDER BY date(" + HeartRateContract.Entry.DATE_TIME_COLUMN + ") " +
+                " ORDER BY date(" + DATE_TIME_COLUMN + ") " +
                 "LIMIT 3", null);
 
         if (readings == null) {
@@ -84,8 +101,8 @@ public class HeartRateDatabase {
             return null;
         } else {
             List<HeartReading> rates = new ArrayList<>();
-            int bpmIndex = readings.getColumnIndex(HeartRateContract.Entry.BPM_COLUMN);
-            int dateTimeIndex = readings.getColumnIndex(HeartRateContract.Entry.DATE_TIME_COLUMN);
+            int bpmIndex = readings.getColumnIndex(BPM_COLUMN);
+            int dateTimeIndex = readings.getColumnIndex(DATE_TIME_COLUMN);
 
             if (readings.moveToFirst() && readings.getCount() >= 1) {
                 do {
@@ -171,7 +188,7 @@ public class HeartRateDatabase {
 
         String q  = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
                 " WHERE " + WeightDBContract.WeightEntries.DATE + " > " +
-                " (SELECT DATETIME('now', '-7 day'));";
+                " (SELECT DATETIME('now', '-7 day')) ORDER BY " + HeartRateContract.Entry.DATE + "  DESC;";
 
         Cursor c = _db.rawQuery(q, null);
 
@@ -194,6 +211,8 @@ public class HeartRateDatabase {
 
         c.close();
         close();
+
+//        /Log.d(TAG, "get7DayReadings: " + new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.UK).format(readings.get(readings.size() - 1).getDateTime()));
 
         return readings;
     }
@@ -226,15 +245,15 @@ public class HeartRateDatabase {
     }
 
     public HashMap<String, ArrayList<HeartRateObject>> getRecordsBetweenDates(
-            String start, String end, String activityToSelect) {
+            long start, long end, String activityToSelect) {
 
         open();
 
         HashMap<String, ArrayList<HeartRateObject>> heartRates = getActivityHeartObjectMap();
 
         String q  = "SELECT " + activityToSelect + " FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + WeightDBContract.WeightEntries.DATE +
-                " BETWEEN '" + start + "' AND  '" + end + "' ;";
+                " WHERE " + DATE_TIME_COLUMN +
+                " >= " + start +  " ORDER BY " + DATE_TIME_COLUMN + " ASC ;";
 
         Cursor c = _db.rawQuery(q, null);
 
@@ -279,45 +298,51 @@ public class HeartRateDatabase {
      */
     public void populateDB() {
 
-
-
         open();
 
-        int startHour = 0;
+        int startHour = 6;
         int endHour = 23;
 
-        int count = 50;
+        int count = 20;
 
         Calendar c = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.DAY_OF_YEAR,1);
+        //endDate.add(Calendar.DAY_OF_YEAR, 1);
 
-        c.add(Calendar.DAY_OF_MONTH, -count);
+        c.add(Calendar.DAY_OF_YEAR, -count);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+
 
         Date date = new Date();
 
-        while (c.getTime().before(endDate.getTime())) {
+        while (c.getTimeInMillis() < endDate.getTimeInMillis()) {
 
-            c.set(Calendar.HOUR_OF_DAY, startHour);
+            //c.set(Calendar.HOUR_OF_DAY, startHour);
 
-            int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+            //int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
 
-            while (hourOfDay != endHour) {
+            //while (hourOfDay != endHour) {
 
                 addRecordToDB(c);
 
-                hourOfDay++;
+                c.add(Calendar.MINUTE, 7);
 
-                c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            }
-            c.add(Calendar.DAY_OF_MONTH, 1);
+              //  hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+            //}
+           // c.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        c.add(Calendar.DAY_OF_MONTH, 1);
-
-        for (int i = 0; i <= 3; i++) {
-            addRecordToDB(c);
-        }
+//        c.add(Calendar.DAY_OF_YEAR, 1);
+//        c.set(Calendar.HOUR_OF_DAY, startHour);
+//
+//        int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+//
+//        while (hourOfDay != endHour) {
+//            addRecordToDB(c);
+//            c.add(Calendar.MINUTE, 10);
+//
+//            hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+//        }
 
         close();
 
@@ -327,27 +352,37 @@ public class HeartRateDatabase {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
 
-        int min = 100;
+        int min = 50;
         int max = 135;
+        int hour = c.get(Calendar.HOUR_OF_DAY);
 
         ArrayList<Integer> hours = new ArrayList<>(Arrays.asList(9, 13, 14, 18, 21));
         ArrayList<Integer> minutes = new ArrayList<>(Arrays.asList(0, 10, 15, 30, 45));
 
         Random random = new Random();
 
+        if (hour < 10) {
+            max = 120;
+        } else if (hour < 16) {
+            max = 130;
+        }
+
+
+
         int heartRate = random.nextInt(max - min + 1) + min;
-        int hour = random.nextInt(hours.size());
+
+
         int minute = random.nextInt(minutes.size());
 
         //c.set(Calendar.HOUR_OF_DAY, hours.get(hour));
         //c.set(Calendar.MINUTE, minutes.get(minute));
 
         ContentValues values = new ContentValues();
-        values.put(HeartRateContract.Entry.BPM_COLUMN, heartRate);
-        values.put(HeartRateContract.Entry.DATE_TIME_COLUMN, c.getTimeInMillis());
+        values.put(BPM_COLUMN, heartRate);
+        values.put(DATE_TIME_COLUMN, c.getTimeInMillis());
         values.put(Constants.Const.STATUS, "OK");
         values.put(WeightDBContract.WeightEntries.DATE, format.format(c.getTimeInMillis()));
-        values.put(HeartRateContract.Entry.TYPE,  (c.get(Calendar.HOUR_OF_DAY)));
+        values.put(HeartRateContract.Entry.TYPE,  RESTING);
 
         _db.insert(HeartRateContract.Entry.TABLE_NAME, null, values);
     }
@@ -438,7 +473,7 @@ public class HeartRateDatabase {
         Log.d(TAG, "getDBEntry: " + date);
 
         String query = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + HeartRateContract.Entry.BPM_COLUMN + " = " + bpm +
+                " WHERE " + BPM_COLUMN + " = " + bpm +
                 " AND " + WeightDBContract.WeightEntries.DATE + "= '" + date + "';";
 
         Cursor c = _db.rawQuery(query, null);
@@ -457,15 +492,14 @@ public class HeartRateDatabase {
 
     private HeartRateObject createHeartRateObject(Cursor c) {
 
-
-
         return new HeartRateObject(
                 c.getInt(c.getColumnIndex("id")),
                 c.getInt(c.getColumnIndex("bpm")),
                 c.getLong(c.getColumnIndex("date_time")),
                 c.getString(c.getColumnIndex("status")),
                 c.getString(c.getColumnIndex("date")),
-                c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE))
+                !c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE)).isEmpty() ?
+                        c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE)) : GENERAL
         );
     }
 
@@ -532,12 +566,12 @@ public class HeartRateDatabase {
 
         if (startDate.moveToFirst()) {
             dates.put("startDate", new Date(startDate.getLong(
-                    startDate.getColumnIndex(HeartRateContract.Entry.DATE_TIME_COLUMN))));
+                    startDate.getColumnIndex(DATE_TIME_COLUMN))));
         }
 
         if (endDate.moveToFirst()) {
             dates.put("endDate", new Date(endDate.getLong(
-                    endDate.getColumnIndex(HeartRateContract.Entry.DATE_TIME_COLUMN))));
+                    endDate.getColumnIndex(DATE_TIME_COLUMN))));
         }
 
         startDate.close();
@@ -580,22 +614,100 @@ public class HeartRateDatabase {
 
         int size = 0;
 
-        HashMap<String, Integer> restingDetails;
+        HashMap<String, Integer> restingDetails = createRestingDetailsHashMap();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
 
         open();
 
-        String query = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME + " WHERE " +
-                HeartRateContract.Entry.TYPE + " = " + Constants.Const.RESTING + ";";
+        Calendar st = Calendar.getInstance();
+        Calendar ed = Calendar.getInstance();
+
+        st.add(Calendar.DAY_OF_YEAR, - 7);
+//        String query = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME + " WHERE " +
+//                HeartRateContract.Entry.TYPE + " = " + Constants.Const.RESTING + ";";
+
+        String query  = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
+                " WHERE " + WeightDBContract.WeightEntries.DATE + " > " +
+                " (SELECT DATETIME('now', '-7 day'));";
 
         Cursor c = _db.rawQuery(query, null);
 
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        int avg = 0;
+        int sum = 0;
+        int countRestingRates = 0;
+        int over100 = 0;
+        int lessThan40 = 0;
+
+
         if (c.moveToFirst()) {
             size = c.getCount();
+            while (c.moveToNext()) {
+                if (c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE)).equals(
+                        Constants.Const.RESTING
+                )) {
+                    countRestingRates++;
+                    int bpm = c.getInt(c.getColumnIndex(BPM_COLUMN));
+
+                    sum += bpm;
+
+                    if (bpm > max) {
+                        max = bpm;
+                    }
+
+                    if (bpm < min) {
+                        min = bpm;
+                    }
+
+                    if (bpm >= 100) {
+                        over100++;
+                    } else if (bpm < 40) {
+                        lessThan40++;
+                    }
+                }
+            }
+
+            avg = sum / countRestingRates;
+            restingDetails.put(Constants.Const.TOTAL_COUNT, countRestingRates);
+            restingDetails.put(RESTING_RATES, countRestingRates > 0 ? countRestingRates : DEFAULT_NO_VALUE);
+            restingDetails.put(Constants.Const.MIN, min > 0 ? min : DEFAULT_NO_VALUE);
+            restingDetails.put(MAX_CAPITAL_M, max > 0 ? max : DEFAULT_NO_VALUE);
+            restingDetails.put(AVG, avg > 0 ? avg : DEFAULT_NO_VALUE);
+            restingDetails.put(Constants.Const.OVER_100, over100 > 0 ? over100 : DEFAULT_NO_VALUE);
+            restingDetails.put(Constants.Const.LESS_THAN_40, lessThan40 > 0 ? over100 : DEFAULT_NO_VALUE);
+
         }
+
+
         c.close();
         close();
 
-        return size;
+        return restingDetails;
+    }
+
+
+
+    private HashMap<String, Integer> createRestingDetailsHashMap() {
+
+        HashMap<String, Integer> restingDetails = new HashMap<>();
+
+        restingDetails.put(TOTAL_COUNT, DEFAULT_NO_VALUE);
+
+        restingDetails.put(RESTING_RATES, DEFAULT_NO_VALUE);
+
+        restingDetails.put(MIN, DEFAULT_NO_VALUE);
+
+        restingDetails.put(MAX_CAPITAL_M, DEFAULT_NO_VALUE);
+
+        restingDetails.put(OVER_100, DEFAULT_NO_VALUE);
+
+        restingDetails.put(LESS_THAN_40, DEFAULT_NO_VALUE);
+
+        restingDetails.put(AVG, DEFAULT_NO_VALUE);
+
+        return restingDetails;
     }
 
     /**
@@ -616,7 +728,7 @@ public class HeartRateDatabase {
 
         if (c.moveToFirst()) {
             while (c.moveToNext()) {
-                total += c.getInt(c.getColumnIndex(HeartRateContract.Entry.BPM_COLUMN));
+                total += c.getInt(c.getColumnIndex(BPM_COLUMN));
             }
             average = total / c.getCount();
         }
@@ -639,8 +751,8 @@ public class HeartRateDatabase {
 
         String query = "SELECT *" +
                 " FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + HeartRateContract.Entry.BPM_COLUMN + " = " +
-                " (SELECT MAX(" + HeartRateContract.Entry.BPM_COLUMN + ") " +
+                " WHERE " + BPM_COLUMN + " = " +
+                " (SELECT MAX(" + BPM_COLUMN + ") " +
                 " FROM " + HeartRateContract.Entry.TABLE_NAME + ");";
 
         Cursor c = _db.rawQuery(query, null);
@@ -667,8 +779,8 @@ public class HeartRateDatabase {
 
         String query = "SELECT *" +
                 " FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + HeartRateContract.Entry.BPM_COLUMN + " = " +
-                " (SELECT MIN(" + HeartRateContract.Entry.BPM_COLUMN + ") " +
+                " WHERE " + BPM_COLUMN + " = " +
+                " (SELECT MIN(" + BPM_COLUMN + ") " +
                 " FROM " + HeartRateContract.Entry.TABLE_NAME + ");";
 
         Cursor c = _db.rawQuery(query, null);
@@ -743,7 +855,7 @@ public class HeartRateDatabase {
         Cursor c = _db.rawQuery("SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME + ";", null);
 
         if (c.moveToFirst()) {
-            date = format.format(c.getLong(c.getColumnIndex(HeartRateContract.Entry.DATE_TIME_COLUMN)));
+            date = format.format(c.getLong(c.getColumnIndex(DATE_TIME_COLUMN)));
         }
 
         c.close();
@@ -767,7 +879,7 @@ public class HeartRateDatabase {
                 " (SELECT MAX(id) FROM " + HeartRateContract.Entry.TABLE_NAME + ");", null);
 
         if (c.moveToFirst()) {
-            date = format.format(c.getLong(c.getColumnIndex(HeartRateContract.Entry.DATE_TIME_COLUMN)));
+            date = format.format(c.getLong(c.getColumnIndex(DATE_TIME_COLUMN)));
         }
 
         c.close();
@@ -783,7 +895,7 @@ public class HeartRateDatabase {
      * @param end
      * @return
      */
-    public HashMap<String, ArrayList<HeartRateObject>> getAllRecordsBetweenDates(String start, String end) {
+    public HashMap<String, ArrayList<HeartRateObject>> getAllRecordsBetweenDates(long start, long end) {
         open();
         HashMap<String, ArrayList<HeartRateObject>> datesMap = new HashMap<>();
 
@@ -823,12 +935,11 @@ public class HeartRateDatabase {
      * @param end
      * @return
      */
-    private Cursor getRecordsBetween(String start, String end) {
+    private Cursor getRecordsBetween(long start, long end) {
 
         // All records query
         String q  = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + WeightDBContract.WeightEntries.DATE +
-                " BETWEEN '" + start + "' AND  '" + end + "' ;";
+                " WHERE " + DATE_TIME_COLUMN + " > " + start + ";";
 
         // Perform the query
         return  _db.rawQuery(q, null);
@@ -871,20 +982,37 @@ public class HeartRateDatabase {
         return null;
     }
 
+    /**
+     * Retrieve the last 24 records.
+     *
+     * @return
+     */
     public HashMap<String, ArrayList<HeartRateObject>> getLast24Records() {
         HashMap<String, ArrayList<HeartRateObject>> records = getActivityHeartObjectMap();
+
+        Calendar c1 = Calendar.getInstance();
+        c1.add(Calendar.DATE, -3);
+        c1.set(Calendar.HOUR_OF_DAY, 0);
+        c1.set(Calendar.MINUTE, 0);
 
         open();
 
         String q = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " ORDER BY " + HeartRateContract.Entry.ID_COLUMN + " ASC LIMIT 24;";
+                " WHERE " + DATE_TIME_COLUMN + " > " + c1.getTimeInMillis();
 
         Cursor c = _db.rawQuery(q, null);
 
         if (c.moveToFirst()) {
             while (c.moveToNext()) {
-                records.get(c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE)))
-                        .add(createHeartRateObject(c));
+//                Log.d(TAG, "BPM: " + String.valueOf(c.getInt(c.getColumnIndex(BPM_COLUMN))) +
+//                        " Type: " + String.valueOf(c.getString(c.getColumnIndex(TYPE))) +
+//                        " Status: " + c.getString(c.getColumnIndex(STATUS)) +
+//                        " Date: " + c.getString(c.getColumnIndex(DATE)));
+                String type = c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE));
+                if (type != null && !type.isEmpty()) {
+                    records.get(type).add(createHeartRateObject(c));
+                }
+
             }
         }
 
@@ -915,16 +1043,15 @@ public class HeartRateDatabase {
     }
 
     public HashMap<String,ArrayList<HeartRateObject>> getActivityRecordsBetweenDates(
-            String start, String end, String activityType) {
+            long start, long end, String activityType) {
 
         HashMap<String, ArrayList<HeartRateObject>> records = getActivityHeartObjectMap();
 
         open();
 
         String q  = "SELECT * FROM " + HeartRateContract.Entry.TABLE_NAME +
-                " WHERE " + WeightDBContract.WeightEntries.DATE +
-                " BETWEEN '" + start + "' AND  '" + end + "' " +
-                ";";
+                " WHERE " + DATE_TIME_COLUMN +
+                " > " + start + ";";
 
         Cursor c = _db.rawQuery(q, null);
 
@@ -932,8 +1059,13 @@ public class HeartRateDatabase {
 
         if (c.moveToFirst()) {
             while (c.moveToNext()) {
-                records.get(c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE)))
-                        .add(createHeartRateObject(c));
+
+                String type = c.getString(c.getColumnIndex(HeartRateContract.Entry.TYPE));
+
+                if (!type.isEmpty()) {
+                    records.get(type).add(createHeartRateObject(c));
+                }
+
             }
         }
 

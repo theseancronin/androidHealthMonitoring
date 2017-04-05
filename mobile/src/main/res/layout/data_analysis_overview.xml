@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                >
 
                 <ImageButton
                     android:id="@+id/download_report"
@@ -39,6 +39,20 @@
                     android:scaleType="fitXY"
                     android:layout_gravity="end"
                     android:layout_margin="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/post_activity_resting_rates"
+
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#e5e5e5"/>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/bar_chart"
@@ -331,32 +345,24 @@
                         android:background="@drawable/border_bottom"
                         android:padding="5dp">
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
-                            android:padding="5dp">
+                            android:padding="5dp"
+                            android:orientation="vertical">
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Walking Heart Rates Detected"
-                                android:textSize="16sp"
-
-                                />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.2"
-                            android:layout_gravity="end"
-                            android:padding="5dp">
-                            <TextView
-                                android:id="@+id/walking_rate_count"
+                                android:id="@+id/activity_rate_count"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:text="@string/no_value"
-                                android:gravity="end"
+                                />
+
+                            <TextView
+                                android:id="@+id/percentage_activity"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="14sp"
+                                android:text="@string/no_value"
                                 />
                         </LinearLayout>
                     </LinearLayout>
@@ -369,35 +375,27 @@
                         android:orientation="horizontal"
                         android:background="@drawable/border_bottom"
                         android:padding="5dp">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
-                            android:padding="5dp">
-                            <TextView
-                                android:id="@+id/resting_txt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/resting_rates_detected"
-                                android:textSize="16sp"
-
-                                />
-                        </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.2"
-                            android:layout_gravity="end"
-                            android:padding="5dp">
+                            android:padding="5dp"
+                            android:orientation="vertical">
                             <TextView
                                 android:id="@+id/post_activity_resting_rate_count"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:text="@string/no_value"
-                                android:gravity="end"
                                 />
+                            <TextView
+                                android:id="@+id/percentage_resting_rates"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text="@string/no_value"
+                                />
+
                         </LinearLayout>
                     </LinearLayout>
 

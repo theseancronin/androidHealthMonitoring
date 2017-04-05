@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.shnellers.heartrate.Calculations;
 import com.android.shnellers.heartrate.Constants;
 import com.android.shnellers.heartrate.R;
 import com.android.shnellers.heartrate.charts.MyAxisValueFormatter;
@@ -126,9 +127,29 @@ public class DataOverview extends AppCompatActivity {
     @BindView(R.id.download_report)
     protected ImageView mDownloadReport;
 
+    @BindView(R.id.percentage_resting_rates)
+    protected TextView mPercentageTxt;
+
+    @BindView(R.id.percentage_activity)
+    protected TextView mPercentageActivity;
+
+    @BindView(R.id.activity_rate_count)
+    protected TextView mActivityTxt;
+
     private HeartRateDatabase mHeartRateDatabase;
 
     private HashMap<String, ArrayList<HeartRateObject>> records;
+
+    private HashMap<String, ArrayList<HeartRateObject>> datesMap;
+
+    private HashMap<String, ArrayList<HeartRateObject>> datesMap30Days;
+
+    private HashMap<String, ArrayList<HeartRateObject>> allActivityRates;
+
+    private HashMap<String, ArrayList<HeartRateObject>> allActivityRates30Days;
+
+    ArrayList<String> dates;
+    ArrayList<String> dates30Days;
 
     private boolean mSevenSelected;
     private boolean mThirtySelected;
@@ -137,6 +158,8 @@ public class DataOverview extends AppCompatActivity {
     private String mTimelineToShow;
 
     private HashMap<String, ArrayList<HeartRateObject>> recordings;
+    private HashMap<String, ArrayList<HeartRateObject>> recordings30Days;
+
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -183,6 +206,65 @@ public class DataOverview extends AppCompatActivity {
 //            mHeartRateDatabase.populateDB();
 
 
+//        Calendar c1 = Calendar.getInstance();
+//        Calendar c2 = Calendar.getInstance();
+//        Calendar c3 = Calendar.getInstance();
+//
+//        c1.add(Calendar.DAY_OF_YEAR, -7);
+//
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+//
+//        recordings = mHeartRateDatabase.getRecordsBetweenDates(
+//                c1.getTimeInMillis(),
+//                c2.getTimeInMillis(), Constants.Const.SELECT_ALL);
+//
+//        // Get all the records between the dates
+//        HashMap<String, ArrayList<HeartRateObject>> allActivityRates =
+//                mHeartRateDatabase.getActivityRecordsBetweenDates(
+//                        c1.getTimeInMillis(),
+//                        c2.getTimeInMillis(),
+//                        getActivitySpinnerValue());
+//         allActivityRates =
+//                mHeartRateDatabase.getActivityRecordsBetweenDates(
+//                c1.getTimeInMillis(),
+//                c2.getTimeInMillis(),
+//                getActivitySpinnerValue());
+//
+//
+//        try {
+//            dates = DateHelper.getDatesBetween(format.format(c1.getTimeInMillis()),
+//                    format.format(c2.getTimeInMillis()), format);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//         datesMap = mHeartRateDatabase.getAllRecordsBetweenDates(
+//                c1.getTimeInMillis(),
+//                c2.getTimeInMillis());
+//
+//        c1.setTimeInMillis(System.currentTimeMillis());
+//        c1.add(Calendar.DAY_OF_YEAR, -30);
+//
+//        try {
+//            dates30Days = DateHelper.getDatesBetween(format.format(c1.getTimeInMillis()),
+//                    format.format(c2.getTimeInMillis()), format);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        allActivityRates30Days =
+//                mHeartRateDatabase.getActivityRecordsBetweenDates(
+//                        c1.getTimeInMillis(),
+//                        c2.getTimeInMillis(),
+//                        getActivitySpinnerValue());
+//
+//        recordings30Days = mHeartRateDatabase.getRecordsBetweenDates(
+//                c1.getTimeInMillis(),
+//                c2.getTimeInMillis(), Constants.Const.SELECT_ALL);
+//        datesMap30Days = mHeartRateDatabase.getAllRecordsBetweenDates(
+//                c1.getTimeInMillis(),
+//                c2.getTimeInMillis());
 
 
         setActivityToDisplaySpinner();
@@ -199,6 +281,30 @@ public class DataOverview extends AppCompatActivity {
         setPieChart();
         setWarningText();
         setActivityRateRangeTxt();
+    }
+
+    private HashMap<String, ArrayList<HeartRateObject>> getRecordings() {
+        return recordings;
+    }
+
+    private HashMap<String, ArrayList<HeartRateObject>> getRecordings30Days() {
+        return recordings30Days;
+    }
+
+    public ArrayList<String> getDates() {
+        return dates;
+    }
+
+    public ArrayList<String> getDates30Days() {
+        return dates30Days;
+    }
+
+    public HashMap<String, ArrayList<HeartRateObject>> getAllActivityRates() {
+        return allActivityRates;
+    }
+
+    public HashMap<String, ArrayList<HeartRateObject>> getAllActivityRates30Days() {
+        return allActivityRates30Days;
     }
 
     private void setActivityRateRangeTxt() {
@@ -381,6 +487,7 @@ public class DataOverview extends AppCompatActivity {
         ArrayList<BarEntry> activityEntry = new ArrayList<>();
         ArrayList<Entry> lineEntries = new ArrayList<>();
         ArrayList<String> dates;
+        HashMap<String, ArrayList<HeartRateObject>> allActivityRates;
 
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
@@ -389,34 +496,43 @@ public class DataOverview extends AppCompatActivity {
 
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
+        Calendar c3 = Calendar.getInstance();
 
         // Reset the calendar to the correct start day
         if (getSpinnerValue().equals(Constants.Const.PREVIOUS_SEVEN_DAYS)) {
             c1.add(Calendar.DAY_OF_YEAR, -7);
+           // dates = getDates();
+            //allActivityRates = getAllActivityRates();
         }else if (getSpinnerValue().equals(Constants.Const.PREVIOUS_THIRTY_DAYS)) {
             c1.add(Calendar.DAY_OF_YEAR, -30);
-        } else {
-
+           // dates = getDates30Days();
+           // allActivityRates = getAllActivityRates30Days();
         }
 
         recordings = mHeartRateDatabase.getRecordsBetweenDates(
-                        format.format(c1.getTimeInMillis()),
-                        format.format(c2.getTimeInMillis()), Constants.Const.SELECT_ALL);
+                        c1.getTimeInMillis(),
+                        c2.getTimeInMillis(), Constants.Const.SELECT_ALL);
 
         // Get all the records between the dates
-        HashMap<String, ArrayList<HeartRateObject>> allActivityRates =
+        allActivityRates =
                 mHeartRateDatabase.getActivityRecordsBetweenDates(
-                format.format(c1.getTimeInMillis()),
-                format.format(c2.getTimeInMillis()),
+                c1.getTimeInMillis(),
+                c2.getTimeInMillis(),
                 getActivitySpinnerValue());
 
         dates = DateHelper.getDatesBetween(format.format(c1.getTimeInMillis()),
                 format.format(c2.getTimeInMillis()), format);
 
 
-        HashMap<String, ArrayList<HeartRateObject>> datesMap = mHeartRateDatabase.getAllRecordsBetweenDates(
-                format.format(c1.getTimeInMillis()),
-                format.format(c2.getTimeInMillis()));
+        HashMap<String, ArrayList<HeartRateObject>> datesMap =
+                mHeartRateDatabase.getAllRecordsBetweenDates(
+                c1.getTimeInMillis(),
+                c2.getTimeInMillis());
+
+//        ActivityRecognitionDatabase db = new ActivityRecognitionDatabase(this);
+//        HashMap<String, ArrayList<ActivityObject>> activityMap = db.getAllRecordsBetweenDates(
+//                c1.getTimeInMillis());
+
 
         try {
             setChartXAxisDates(axisFormat.format(c1.getTimeInMillis()), axisFormat.format(c2.getTimeInMillis()));
@@ -434,30 +550,53 @@ public class DataOverview extends AppCompatActivity {
         int min = 0;
         int max = 0;
 
+        int goodRangeCount = 0;
+
+        int activityCount = 0;
+
+        int totalResting = 0;
+
         ArrayList<Integer> averageHeartRates = new ArrayList<>();
         ArrayList<Integer> restingHeartRates = new ArrayList<>();
+
+        int allRates = 0;
 
         if (!getActivitySpinnerValue().equals(Constants.Const.RESTING)) {
             int day = 0;
 
             if ((!datesMap.isEmpty())) {
 
+               // Log.d(TAG, "DATES: " + String.valueOf(dates.size()));
                 // Get the first object
                 //HeartRateObject current = rates.get(0);
+
                 for (int date = 0; date < dates.size(); date++) {
+
                     String currentDate = dates.get(date);
+
                     Date d = sdf.parse(currentDate);
 
                     ArrayList<HeartRateObject> rates = datesMap.get(format.format(d.getTime()));
+//                   / ArrayList<ActivityObject> activityObjects = activityMap.get(format.format(d.getTime()));
+
 
                     if (rates != null) {
 
-                        int entryPosition = 0;
-                        for (int record = 0; record < rates.size(); record++) {
+                        Log.d(TAG, "HEART OBJECTS " + String.valueOf(rates.size()));
 
+                        int entryPosition = 0;
+
+                        for (int record = 0; record < rates.size(); record++) {
+//                            for (int act = 0; act < activityObjects.size(); act++) {
+//
+//                            }
                             // Get the next object
                             //HeartRateObject next = rates.get(record);
                             HeartRateObject current = rates.get(record);
+
+                            Log.d(TAG, "FOUND: " + current.getType());
+
+                            allRates++;
 
                             if (current.getType().equals(Constants.Const.RESTING)) {
                                 restCount++;
@@ -468,8 +607,9 @@ public class DataOverview extends AppCompatActivity {
                             if (current.getType().equals(getActivitySpinnerValue())) {
 
                                 avgCount++;
-                                avgSum += current.getHeartRate();
+                                activityCount++;
 
+                                avgSum += current.getHeartRate();
                                 activityEntry.add(new BarEntry(record, current.getHeartRate()));
 
                                 // Ensures we don't over-run the array size
@@ -488,9 +628,16 @@ public class DataOverview extends AppCompatActivity {
                                     // or until the type is not equal to the selected activity.
                                     while (!notActivity && position != rates.size()) {
 
+                                        c3.setTimeInMillis(next.getDateTime());
+
                                         // We check if the heart rate post the activity is resting and
                                         // if so increment the sum and count of heart rates detected.
-                                        if (next.getType().equals(Constants.Const.RESTING)) {
+                                        // We only look at values before 12 when the user is presumed asleep.
+                                        if (next.getType().equals(Constants.Const.RESTING) && c3.get(Calendar.HOUR_OF_DAY) < 21) {
+
+                                            if (next.getHeartRate() >= 60 && next.getHeartRate() <= 100) {
+                                                goodRangeCount++;
+                                            }
                                             sum += next.getHeartRate();
                                            // lineEntries.add(new Entry(entryPosition, next.getHeartRate()));
                                            // entryPosition++;
@@ -538,7 +685,6 @@ public class DataOverview extends AppCompatActivity {
                             }
                         }
 
-
                         if (count > 0) {
                             int average = sum / count;
                             sum = 0;
@@ -560,14 +706,25 @@ public class DataOverview extends AppCompatActivity {
                         }
 
                     }
-
-
-
-
                 }
 
             }
-            mRestingRateCount.setText(String.valueOf(totalCount));
+
+            String rest= String.valueOf(totalCount) + " resting heart rates recorded after " + getActivitySpinnerValue();
+            int restGoodPerc = Calculations.calculatePercentage(goodRangeCount, totalCount);
+            String restPerc = String.valueOf(restGoodPerc) + "% were between 60 and 100 beats per minute";
+
+            String activity = String.valueOf(activityCount) + " " + getActivitySpinnerValue() + " heart rates detected";
+            int activityPercentage = Calculations.calculatePercentage(activityCount, allRates);
+            String activityStr = "This was " + String.valueOf(activityPercentage) + "% of all heart rates recorded";
+
+            mRestingRateCount.setText(rest);
+            mPercentageTxt.setText(restPerc);
+
+            mActivityTxt.setText(activity);
+            mPercentageActivity.setText(activityStr);
+
+            Log.d(TAG, "ENTRIES: " + String.valueOf(entries.size()));
             updateLineDataSet(entries, activityEntry, dates);
             updateLineChart(allActivityRates.get(getActivitySpinnerValue()), averageHeartRates, restingHeartRates);
         }
@@ -575,6 +732,7 @@ public class DataOverview extends AppCompatActivity {
 
     /**
      * Update the line chart
+     *
      *  @param rates
      * @param averageHeartRates
      * @param restingHeartRates*/
@@ -860,7 +1018,7 @@ public class DataOverview extends AppCompatActivity {
     private void setBreakdownData() {
 
         records = mHeartRateDatabase.getAllRecords();
-
+//        Log.d(TAG, "RECORDINGS: " + String.valueOf(re.size()));
         if (!records.isEmpty()) {
 
             String activity = getActivitySpinnerValue();
@@ -906,6 +1064,8 @@ public class DataOverview extends AppCompatActivity {
         int lessThan40 = 0;
 
         //SimpleDateFormat format = new SimpleDateFormat("")
+
+
 
         long dayOfHighestAverage = 0;
 
@@ -1136,7 +1296,7 @@ public class DataOverview extends AppCompatActivity {
     public void downloadReport() {
 
         try {
-            File pdfFile = PDFReport.createPDFReport(mHeartRateDatabase.getDBSize());
+            File pdfFile = PDFReport.createPDFReport(mHeartRateDatabase.getDBSize(), mHeartRateDatabase.getRestingData());
             viewPdf(pdfFile);
         } catch (Exception e) {
             e.printStackTrace();

@@ -14,6 +14,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.android.shnellers.heartrate.database.RemindersContract;
 import com.android.shnellers.heartrate.database.RemindersDatabase;
@@ -34,9 +37,12 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class Reminders extends AppCompatActivity implements View.OnClickListener,
                     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        DataApi.DataListener{
+        DataApi.DataListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "Reminders";
 
@@ -56,10 +62,20 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
 
     private Node mNode;
 
+    private ArrayAdapter<CharSequence> mSpinnerAdapter;
+
+    private String reminderTypeSelected;
+
+
+    @BindView(R.id.reminder_type)
+    protected Spinner mSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder_list_view);
+
+        ButterKnife.bind(this);
 
         getSupportActionBar().show();
 
@@ -80,8 +96,35 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
 
 
         Log.d(TAG, "onCreate: ");
+        setSpinner();
+        displayRecyclerView(reminderTypeSelected);
 
-        displayRecyclerView();
+
+    }
+
+    private void setSpinner() {
+
+        mSpinner = (Spinner) findViewById(R.id.reminder_type);
+        mSpinner.setOnItemSelectedListener(this);
+
+        mSpinnerAdapter = ArrayAdapter.createFromResource(
+                this, R.array.reminder_types, android.R.layout.simple_spinner_item);
+
+        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mSpinner.setAdapter(mSpinnerAdapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        reminderTypeSelected = parent.getSelectedItem().toString();
+        reminders.clear();
+        displayRecyclerView(reminderTypeSelected);
+    }
+
+    @Override
+    public void onNothingSelected(final AdapterView<?> parent) {
+
     }
 
     @Override
@@ -99,9 +142,9 @@ public class Reminders extends AppCompatActivity implements View.OnClickListener
         mGoogleApiClient.disconnect();
     }
 
-    private void displayRecyclerView() {
+    private void displayRecyclerView(final String type) {
 
-        Cursor c = db.getReminders();
+        Cursor c = db.getReminders(type);
 
         int hourIndex, minuteIndex, daysIndex, typeIndex, activeIndex, idIndex;
 

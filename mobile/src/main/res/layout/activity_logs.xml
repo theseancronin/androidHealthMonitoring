@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/no_records"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:text="There were no records found, please select a date"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:visibility="invisible"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_above="@+id/bottom_container">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_card_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:focusable="false"/>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="wrap_content"
+        android:layout_height="65dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/select_date"
+            android:background="@drawable/layout_box_border_3px"/>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

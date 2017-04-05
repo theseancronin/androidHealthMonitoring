@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
+
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               >
@@ -12,15 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:layout_above="@+id/bottom_container">
+        android:layout_above="@+id/bottom_container"
+        android:layout_marginTop="4dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+
             <android.support.v7.widget.CardView
                 android:id="@+id/chart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2.5dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp">
                 <LinearLayout
                     android:id="@+id/auto_rec"
                     android:layout_width="match_parent"
@@ -41,277 +47,107 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <com.github.mikephil.charting.charts.BarChart
-                            android:id="@+id/bar_chart"
+                        <com.github.mikephil.charting.charts.CombinedChart
+                            android:id="@+id/combined_chart"
                             android:layout_width="match_parent"
                             android:layout_height="250dp"
                             />
+                        <Spinner
+                            android:id="@+id/activity_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_margin="5dp"
+                            android:visibility="visible"/>
+
                     </LinearLayout>
 
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <ScrollView
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_card_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scrollbars="vertical"
                 android:layout_below="@+id/chart_container"
-                android:fillViewport="true">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/activity_card_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical"
-                    >
+                android:focusable="false"/>
 
-                </android.support.v7.widget.RecyclerView>
-            </ScrollView>
-
-            <LinearLayout
-                android:visibility="gone"
-                android:id="@+id/stats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp"
-                android:baselineAligned="true"
-                android:layout_below="@+id/chart_container">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/latest_activity"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="8dp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    >
-                    <View
-                        android:id="@+id/distance_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/ic_place_black_24dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="8dp"/>
-
-                    <TextView
-                        android:id="@+id/distance_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/distance"
-                        android:layout_gravity="center"
-                        android:textSize="14sp"
-                        android:layout_toEndOf="@id/distance_icon"
-                        android:layout_centerVertical="true"/>
-
-                    <TextView
-                        android:id="@+id/total_distance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_distance"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:textSize="16sp"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/distance_icon"
-                        android:layout_marginTop="8dp"
-                        android:background="#ececec"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <View
-                        android:id="@+id/calories_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/ic_burned"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="8dp"/>
-
-                    <TextView
-                        android:id="@+id/calories_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/calories"
-                        android:layout_gravity="center"
-                        android:textSize="14sp"
-                        android:layout_toEndOf="@+id/calories_icon"
-                        android:layout_centerVertical="true"
-                        />
-
-                    <TextView
-                        android:id="@+id/total_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_calories"
-                        android:textSize="16sp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/calories_icon"
-                        android:layout_marginTop="8dp"
-                        android:background="#ececec"/>
-
-                </RelativeLayout>
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <View
-                        android:id="@+id/time_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/ic_time_black_24dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="8dp"/>
-
-                    <TextView
-                        android:id="@+id/time_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/time"
-                        android:layout_gravity="center"
-                        android:textSize="14sp"
-                        android:layout_toEndOf="@+id/time_icon"
-                        android:layout_centerVertical="true"/>
-
-                    <TextView
-                        android:id="@+id/total_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_minutes"
-                        android:textSize="16sp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/time_icon"
-                        android:layout_marginTop="8dp"
-                        android:background="#ececec"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <View
-                        android:id="@+id/steps_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/ic_steps"
-                        android:layout_gravity="center_vertical"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="5dp"/>
-
-                    <TextView
-                        android:id="@+id/steps_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/steps"
-                        android:layout_gravity="center"
-                        android:textSize="14sp"
-                        android:layout_toEndOf="@+id/steps_icon"
-                        android:layout_centerVertical="true"/>
-
-                    <TextView
-                        android:id="@+id/total_steps"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_steps"
-                        android:textSize="16sp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/steps_icon"
-                        android:layout_marginTop="8dp"
-                        android:background="#ececec"/>
-
-                </RelativeLayout>
-
-            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 
     <RelativeLayout
         android:id="@+id/bottom_container"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:orientation="horizontal"
         android:layout_centerInParent="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+
+        android:padding="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:layout_centerInParent="true">
 
             <Button
-                android:id="@+id/dashboard"
+                android:id="@+id/day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_activity_dashboard_green"
-                android:text="@string/Dashboard"
+                android:text="@string/day"
                 android:textSize="12sp"
                 android:textStyle="bold"
+
                 android:layout_weight="1"
                 android:padding="10dp"
                 android:layout_margin="2dp"
                 android:background="@drawable/layout_box_border_3px"/>
 
             <Button
-                android:id="@+id/new_activity"
+                android:id="@+id/seven_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_running"
-                android:text="@string/start"
+                android:text="@string/_7_day"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:padding="10dp"
+
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:background="@drawable/layout_box_border_3px"/>
 
 
             <Button
-                android:id="@+id/analysis"
+                android:id="@+id/thirty_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_running"
-                android:text="@string/logs"
+                android:text="@string/_30_day"
                 android:textStyle="bold"
                 android:padding="10dp"
+
+                android:textSize="12sp"
+                android:layout_margin="2dp"
+                android:background="@drawable/layout_box_border_3px"
+                />
+
+            <Button
+                android:id="@+id/year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/year"
+                android:textStyle="bold"
+                android:padding="10dp"
+
                 android:textSize="12sp"
                 android:layout_margin="2dp"
                 android:background="@drawable/layout_box_border_3px"
                 />
 
         </LinearLayout>
-
-
-
     </RelativeLayout>
 </RelativeLayout>

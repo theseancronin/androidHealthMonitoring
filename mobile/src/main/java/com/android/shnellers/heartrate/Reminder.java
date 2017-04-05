@@ -2,7 +2,6 @@ package com.android.shnellers.heartrate;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -15,19 +14,28 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.android.shnellers.heartrate.activities.CalendarFragment;
 import com.android.shnellers.heartrate.database.RemindersContract;
 import com.android.shnellers.heartrate.database.RemindersDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class Reminder extends AppCompatActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+        CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener  {
 
     private static final String HEART_RATE_REMINDER = "heart_rate";
     private static final String MEDICATION_REMINDER = "Medication";
@@ -65,47 +73,41 @@ public class Reminder extends AppCompatActivity implements View.OnClickListener,
 
     private String reminderTypeSelected;
 
+    private Calendar mCalendar;
+
+    private long mDateTime;
+
+    @BindView(R.id.datePicker)
+    protected Button mDatePicker;
+
+    @BindView(R.id.date)
+    protected TextView mCurrentDate;
+
+    private int year;
+    private int month;
+    private int day;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
+
+        ButterKnife.bind(this);
 
         // Get the time picker
         mTimePicker = (TimePicker) findViewById(R.id.time_picker);
 
         // Initialize the buttons
         mSaveBtn = (Button) findViewById(R.id.save_btn);
-        mMonBtn = (Button) findViewById(R.id.monday_btn);
-        mTuesBtn = (Button) findViewById(R.id.tuesday_btn);
-        mWedBtn = (Button) findViewById(R.id.wednesday_btn);
-        mThursBtn = (Button) findViewById(R.id.thursday_btn);
-        mFriBtn = (Button) findViewById(R.id.friday_btn);
-        mSatBtn = (Button) findViewById(R.id.saturday_btn);
-        mSunBtn = (Button) findViewById(R.id.sunday_btn);
+
 
         // Set the button listeners
         mSaveBtn.setOnClickListener(this);
-        mMonBtn.setOnClickListener(this);
-        mTuesBtn.setOnClickListener(this);
-        mWedBtn.setOnClickListener(this);
-        mThursBtn.setOnClickListener(this);
-        mFriBtn.setOnClickListener(this);
-        mSatBtn.setOnClickListener(this);
-        mSunBtn.setOnClickListener(this);
-
-        // Initialize the checkbox
-        mEverydayCheck = (AppCompatCheckBox) findViewById(R.id.everyday_check);
-        mEverydayCheck.setOnCheckedChangeListener(this);
 
         reminders = new ArrayList<>();
 
-        monBtnPressed = false;
-        tuesBtnPressed = false;
-        wedBtnPressed = false;
-        thursBtnPressed = false;
-        friBtnPressed = false;
-        satBtnPressed = false;
-        sunBtnPressed = false;
+        Calendar calendar = Calendar.getInstance();
+        setDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
 
         db = new RemindersDatabase(this);
 
@@ -127,55 +129,164 @@ public class Reminder extends AppCompatActivity implements View.OnClickListener,
 
     }
 
+    private void setDate(final int day, final int month, final int year) {
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.UK);
+
+        mCalendar = Calendar.getInstance();
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.DAY_OF_MONTH, day);
+
+        setDateTime(mCalendar.getTimeInMillis());
+
+        mCurrentDate.setText(format.format(mCalendar.getTimeInMillis()));
+    }
+
+    /**
+     *
+     * @param timeInMillis
+     */
+    private void setDateTime(final long timeInMillis) {
+
+        mDateTime = timeInMillis;
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    private long getDateTime() {
+        return mDateTime;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Calendar getCalendar() {
+        return mCalendar;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.save_btn:
                 saveReminder();
                 break;
-            case R.id.monday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    monBtnPressed = setButtonColor(mMonBtn, monBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.monday), monBtnPressed);
-                }
-                break;
-            case R.id.tuesday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    tuesBtnPressed = setButtonColor(mTuesBtn, tuesBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.tuesday), tuesBtnPressed);
-                }
-                break;
-            case R.id.wednesday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    wedBtnPressed = setButtonColor(mWedBtn, wedBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.wednesday), wedBtnPressed);
-                }
-                break;
-            case R.id.thursday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    thursBtnPressed = setButtonColor(mThursBtn, thursBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.thursday), thursBtnPressed);
-                }
-                break;
-            case R.id.friday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    friBtnPressed = setButtonColor(mFriBtn, friBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.friday), friBtnPressed);
-                }
-                break;
-            case R.id.saturday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    satBtnPressed = setButtonColor(mSatBtn, satBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.saturday), satBtnPressed);
-                }
-                break;
-            case R.id.sunday_btn:
-                if (!mEverydayCheck.isChecked()) {
-                    sunBtnPressed = setButtonColor(mSunBtn, sunBtnPressed);
-                    addOrRemoveDayFromSelected(getString(R.string.sunday), sunBtnPressed);
-                }
-                break;
+//            case R.id.monday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    monBtnPressed = setButtonColor(mMonBtn, monBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.monday), monBtnPressed);
+//                }
+//                break;
+//            case R.id.tuesday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    tuesBtnPressed = setButtonColor(mTuesBtn, tuesBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.tuesday), tuesBtnPressed);
+//                }
+//                break;
+//            case R.id.wednesday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    wedBtnPressed = setButtonColor(mWedBtn, wedBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.wednesday), wedBtnPressed);
+//                }
+//                break;
+//            case R.id.thursday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    thursBtnPressed = setButtonColor(mThursBtn, thursBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.thursday), thursBtnPressed);
+//                }
+//                break;
+//            case R.id.friday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    friBtnPressed = setButtonColor(mFriBtn, friBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.friday), friBtnPressed);
+//                }
+//                break;
+//            case R.id.saturday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    satBtnPressed = setButtonColor(mSatBtn, satBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.saturday), satBtnPressed);
+//                }
+//                break;
+//            case R.id.sunday_btn:
+//                if (!mEverydayCheck.isChecked()) {
+//                    sunBtnPressed = setButtonColor(mSunBtn, sunBtnPressed);
+//                    addOrRemoveDayFromSelected(getString(R.string.sunday), sunBtnPressed);
+//                }
+//                break;
         }
+    }
+
+    /**
+     * On click to display calendar.
+     */
+    @OnClick(R.id.datePicker)
+    protected void dateSelection() {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("day", getCalendar().get(Calendar.DAY_OF_MONTH));
+        bundle.putInt("month", getCalendar().get(Calendar.MONTH));
+        bundle.putInt("year", getCalendar().get(Calendar.YEAR));
+
+        CalendarFragment fragment = new CalendarFragment();
+       // fragment.st
+        //fragment.setTargetFragment(, 123);
+        fragment.setArguments(bundle);
+        fragment.show(getSupportFragmentManager(), "dialogFragment");
+    }
+
+    /**
+     * This is used to to get the date picked by the user.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123) {
+            setDay(data.getIntExtra("day", -1));
+            setMonth(data.getIntExtra("dayOfMonth", -1));
+            setYear(data.getIntExtra("year", -1));
+
+            setDate(data.getIntExtra("day", -1), data.getIntExtra("dayOfMonth", -1), data.getIntExtra("year", -1));
+
+        }
+
+    }
+
+//    @Override
+//    public void onDateSet(final DatePicker view, final int year, final int month, final int dayOfMonth) {
+//        System.out.println("YEAR: " + year);
+//    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(final int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(final int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(final int day) {
+        this.day = day;
     }
 
     private void addOrRemoveDayFromSelected(String dayStr, boolean pressed) {
@@ -267,37 +378,37 @@ public class Reminder extends AppCompatActivity implements View.OnClickListener,
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         switch (compoundButton.getId()) {
-            case R.id.everyday_check:
-                if (mEverydayCheck.isChecked()) {
-                    disableSelectDaysButtons();
-                } else {
-                    enableSelectDaysButtons();
-                }
-                break;
+//            case R.id.everyday_check:
+//                if (mEverydayCheck.isChecked()) {
+//                    disableSelectDaysButtons();
+//                } else {
+//                    enableSelectDaysButtons();
+//                }
+//                break;
         }
     }
 
-    private void enableSelectDaysButtons() {
-        mSaveBtn.setEnabled(true);
-        mMonBtn.setEnabled(true);
-        mTuesBtn.setEnabled(true);
-        mWedBtn.setEnabled(true);
-        mThursBtn.setEnabled(true);
-        mFriBtn.setEnabled(true);
-        mSatBtn.setEnabled(true);
-        mSunBtn.setEnabled(true);
-    }
-
-    private void disableSelectDaysButtons() {
-        mSaveBtn.setEnabled(false);
-        mMonBtn.setEnabled(false);
-        mTuesBtn.setEnabled(false);
-        mWedBtn.setEnabled(false);
-        mThursBtn.setEnabled(false);
-        mFriBtn.setEnabled(false);
-        mSatBtn.setEnabled(false);
-        mSunBtn.setEnabled(false);
-    }
+//    private void enableSelectDaysButtons() {
+//        mSaveBtn.setEnabled(true);
+//        mMonBtn.setEnabled(true);
+//        mTuesBtn.setEnabled(true);
+//        mWedBtn.setEnabled(true);
+//        mThursBtn.setEnabled(true);
+//        mFriBtn.setEnabled(true);
+//        mSatBtn.setEnabled(true);
+//        mSunBtn.setEnabled(true);
+//    }
+//
+//    private void disableSelectDaysButtons() {
+//        mSaveBtn.setEnabled(false);
+//        mMonBtn.setEnabled(false);
+//        mTuesBtn.setEnabled(false);
+//        mWedBtn.setEnabled(false);
+//        mThursBtn.setEnabled(false);
+//        mFriBtn.setEnabled(false);
+//        mSatBtn.setEnabled(false);
+//        mSunBtn.setEnabled(false);
+//    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

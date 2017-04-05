@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
+import static com.android.shnellers.heartrate.database.diary.DiaryContract.DiaryEntry.ID;
 
 /**
  * Created by Sean on 05/02/2017.
@@ -73,6 +74,7 @@ public class DiaryDatabase {
                         c.getLong(c.getColumnIndex(DiaryContract.DiaryEntry.DATE_TIME)));
 
                 DiaryEntry entry = new DiaryEntry(
+                        c.getInt(c.getColumnIndex(ID)),
                         c.getString(c.getColumnIndex(DiaryContract.DiaryEntry.ENTRY)),
                         entryDetails.get(MONTH_OF_YEAR),
                         entryDetails.get(WEEKDAY),

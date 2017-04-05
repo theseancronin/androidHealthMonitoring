@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.android.shnellers.heartrate.heart_rate.HeartRateService;
+import com.android.shnellers.heartrate.heart_rate.HeartRateServiceStarter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataEvent;
@@ -25,7 +25,8 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
+
+import static com.android.shnellers.heartrate.Constants.Const.ACTIVITY;
 
 /**
  * Created by Sean on 16/01/2017.
@@ -38,26 +39,37 @@ public class ListenerService extends WearableListenerService implements MessageA
     // Start with forward slash
     private static final String WEARABLE_DATA_PATH = "/reminders/data/path";
 
+    private static final String LATEST_STATS = "/wear/latest/heart/data";
+
     private static final String HEART_RATE_DATA_PATH = "/heart/data/path";
+    public static final int PATH = 0;
+    public static final int ACTIVITY_INDEX = 1;
 
     private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onDataChanged(DataEventBuffer dataEventBuffer) {
-          Log.d(TAG, "onDataChanged: " + dataEventBuffer);
+        Log.d(TAG, "onDataChanged: " + dataEventBuffer);
+
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
 
         Log.d(TAG, "onDataChanged: ");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
+        mGoogleApiClient.connect();
 
-        ConnectionResult connectionResult =
-                mGoogleApiClient .blockingConnect(30, TimeUnit.SECONDS);
-
-        if (!connectionResult.isSuccess()) {
-            Log.e(TAG, "onDataChanged: Failed to connect to API client");
-            return;
-        }
+//        ConnectionResult connectionResult =
+//                googleApiClient .blockingConnect(30, TimeUnit.SECONDS);
+//
+//        if (!connectionResult.isSuccess()) {
+//            Log.e(TAG, "onDataChanged: Failed to connect to API client");
+//            return;
+//        }
 
         for (DataEvent event : dataEventBuffer) {
             DataItem dataItem = event.getDataItem();
@@ -68,15 +80,19 @@ public class ListenerService extends WearableListenerService implements MessageA
 
                Log.d(TAG, "path: " + path);
             if (path.equals(WEARABLE_DATA_PATH)) {
-                   Log.d(TAG, "onDataChanged: Contains path");
+                Log.d(TAG, "onDataChanged: Contains path");
 
                 unpack(DataMapItem.fromDataItem(event.getDataItem()).getDataMap());
             }
 
             if (path.equals(HEART_RATE_DATA_PATH)) {
-                Log.d(TAG, "START HEAR RATE CHECK");
-                Intent intent = new Intent(this, HeartRateService.class);
-                startActivity(intent);
+                startHeartRateService(null);
+            }
+
+            if (path.equals(LATEST_STATS)) {
+
+                Log.d(TAG, "RECEIVED");
+
             }
         }
     }
@@ -133,7 +149,15 @@ public class ListenerService extends WearableListenerService implements MessageA
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        Log.d(TAG, "onMessageReceived: Outside if");
+
+        String[] msgSplit = messageEvent.getPath().split(",");
+
+        Log.d(TAG, "onMessageReceived: ACTIVITY: " + msgSplit[ACTIVITY_INDEX]);
+
+        if (msgSplit[PATH].equals(HEART_RATE_DATA_PATH)) {
+            startHeartRateService(msgSplit[ACTIVITY_INDEX]);
+        }
+
         // Compare the paths
         if (messageEvent.getPath().equals(WEARABLE_DATA_PATH)) {
             final String message = new String(messageEvent.getData());
@@ -143,12 +167,33 @@ public class ListenerService extends WearableListenerService implements MessageA
             startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear history
             startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Log.d(TAG, "onMessageReceived: Main Activity Started");
-        } else {
+        }
+
+        if (messageEvent.getPath().equals(LATEST_STATS)) {
+
+            Log.d(TAG, "RECEIVED");
 
         }
 
         super.onMessageReceived(messageEvent);
     }
+
+    private void startHeartRateService(String activity) {
+        Intent intent = new Intent(this, HeartRateServiceStarter.class);
+
+        if (activity != null) {
+            intent.putExtra(ACTIVITY, activity);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

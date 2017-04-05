@@ -40,7 +40,7 @@ public class EditPassportKin extends AppCompatActivity implements View.OnClickLi
         telephone = (EditText) findViewById(R.id.kinTelephone);
         relationship = (TextView) findViewById(R.id.kinRelationship);
 
-        saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton = (Button) findViewById(R.id.save_btn);
         cancelButton = (Button) findViewById(R.id.cancelButton);
 
         saveButton.setOnClickListener(this);

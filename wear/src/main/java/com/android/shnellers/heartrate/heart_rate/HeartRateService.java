@@ -35,6 +35,8 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.shnellers.heartrate.Constants.Const.ACTIVITY;
+
 /**
  * Created by Sean on 12/02/2017.
  */
@@ -65,6 +67,8 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 
     private Node mNode;
 
+    private String mActivity;
+
 //    /**
 //     * Creates an IntentService.  Invoked by your subclass's constructor.
 //     *
@@ -75,13 +79,11 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 //    }
 
     public HeartRateService() {
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d(TAG, "onStartCommand: ");
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         mHeartSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -95,10 +97,10 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
-            mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
 
 
-            if (mSensorManager != null) {
+        if (mSensorManager != null) {
             mSensorManager.registerListener(this, mHeartSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
@@ -111,8 +113,9 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 
             nm.notify(1, ncb.build());
 
+        mActivity = intent.getStringExtra(ACTIVITY);
 
-
+        Log.d(TAG, "onStartCommand: " + mActivity);
         startHeartMonitor();
 
         return Service.START_NOT_STICKY;
@@ -139,7 +142,7 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, "onSensorChanged: ");
+      //  Log.d(TAG, "onSensorChanged: ");
 
         if (event.sensor.getType() == Sensor.TYPE_HEART_RATE ) {
 
@@ -148,7 +151,7 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
             if (rounded > 0) {
                 storeHeartSensorValue(rounded);
             }
-            Log.d("HeartRateActivity", "Received heart rate: " + Integer.toString(rounded));
+           // Log.d("HeartRateActivity", "Received heart rate: " + Integer.toString(rounded));
         }
     }
 
@@ -156,17 +159,18 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
      *
      */
     private void startHeartMonitor() {
+        Log.d(TAG, "startHeartMonitor: ");
         heartSensorActive = true;
 
         boolean sensorRegistered = mSensorManager.registerListener(
                 this, mHeartSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        Log.d("Sensor Status: ", "Sensor registered: " + (sensorRegistered ? "yes" : "no"));
+        //Log.d("Sensor Status: ", "Sensor registered: " + (sensorRegistered ? "yes" : "no"));
 
         mCountDownTimer = new CountDownTimer(15000, 500) {
             @Override
             public void onTick(long milliseconds) {
-                Log.d(TAG, "onTick: ");
+               // Log.d(TAG, "onTick: ");
             }
 
             @Override
@@ -186,7 +190,7 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 
         mSensorManager.unregisterListener(this);
 
-        Log.d("HearRateSensor", "Stopped");
+       // Log.d("HearRateSensor", "Stopped");
 
         if (!getSensorReadings().isEmpty()) {
             calculateAverageHeartRate();
@@ -215,7 +219,7 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
 
         heartRate = sum / readings.size();
 
-        Log.d("HeartRate: ", Integer.toString(heartRate));
+       // Log.d("HeartRate: ", Integer.toString(heartRate));
 
 
 
@@ -264,12 +268,18 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
      * @param dateTime
      */
     private void sendMessage(int heartRate, long dateTime) {
-        Log.d(TAG, "sendMessage: ");
         PutDataMapRequest dataMap = PutDataMapRequest.create(WEARABLE_DATA_PATH);
+
         dataMap.getDataMap().putInt("reading", heartRate);
         dataMap.getDataMap().putLong("date_time", dateTime);
         dataMap.getDataMap().putInt("sensor_type", mHeartSensor.getType());
+
+        if (mActivity != null) {
+            dataMap.getDataMap().putString(ACTIVITY, mActivity);
+        }
+
         PutDataRequest dataRequest = dataMap.asPutDataRequest();
+
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, dataRequest);
 
@@ -364,7 +374,7 @@ public class HeartRateService extends Service implements SensorEventListener, Vi
                 dataResult.setResultCallback(new ResultCallback<DataItemBuffer>() {
                     @Override
                     public void onResult(@NonNull DataItemBuffer dataItems) {
-                        Log.d(TAG, "onResult: Item send: " + dataItems.getStatus().isSuccess());
+                       // Log.d(TAG, "onResult: Item send: " + dataItems.getStatus().isSuccess());
                         //Log.v(TAG, "Data Sent to: " + n.getDisplayName());
                         //Log.v(TAG, "Data Node ID: " + n.getId());
                         //Log.v(TAG, "Data Nodes Size: " + nodes.getNodes().size());

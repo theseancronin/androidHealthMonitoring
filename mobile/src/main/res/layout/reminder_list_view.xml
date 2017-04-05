@@ -5,8 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Spinner
+        android:id="@+id/reminder_type"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"/>
+
 
     <ScrollView
+        android:layout_below="@id/reminder_type"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView

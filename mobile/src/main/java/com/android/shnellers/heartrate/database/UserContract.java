@@ -29,6 +29,9 @@ public final class UserContract {
         public static final String COLUMN_PHONE_NUMBER = "phone_number";
         public static final String COLUMN_DATE_OF_BIRTH = "date_of_birth";
         public static final String HEIGHT = "height";
+        public static final String PATIENT_NUMBER = "patient_number";
+        public static final String PHARMACY_NAME = "pharmacy_name";
+        public static final String PHARMACY_NUMBER = "pharmacy_number";
 
         public static final String COLUMN_CONDITION = "condition";
         public static final String COLUMN_LOGGED_IN = "logged_in";

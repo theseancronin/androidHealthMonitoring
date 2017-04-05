@@ -3,6 +3,8 @@ package com.android.shnellers.heartrate.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +24,7 @@ import com.android.shnellers.heartrate.MedicationActivity;
 import com.android.shnellers.heartrate.MedicationAdapter;
 import com.android.shnellers.heartrate.R;
 import com.android.shnellers.heartrate.database.MedicationDatabase;
+import com.android.shnellers.heartrate.database.MedicationDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.provider.BaseColumns._ID;
+import static com.android.shnellers.heartrate.database.MedicationContract.MedicationEntry.TABLE_NAME;
 
 
 /**
@@ -53,6 +59,8 @@ public class MedicationView extends Fragment implements View.OnClickListener {
 
     private boolean allowRefresh;
 
+    private View mView;
+
     @BindView(R.id.add_medication)
     FloatingActionButton mAddMedication;
     @Override
@@ -67,16 +75,13 @@ public class MedicationView extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.medication_view, container, false);
+        mView = inflater.inflate(R.layout.medication_view, container, false);
 
         db = new MedicationDatabase(getActivity());
 
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(this, mView);
 
         allowRefresh = false;
-
-
-
 
         medList = new ArrayList<>();
 
@@ -84,7 +89,7 @@ public class MedicationView extends Fragment implements View.OnClickListener {
 
         if (!medList.isEmpty()) {
 
-            medicationListView = (ListView) view.findViewById(R.id.medication_list);
+            medicationListView = (ListView) mView.findViewById(R.id.medication_list);
 
             adapter = new MedicationAdapter(getActivity(), R.layout.medication_list, medList);
             medicationListView.setAdapter(adapter);
@@ -101,14 +106,17 @@ public class MedicationView extends Fragment implements View.OnClickListener {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
+                    Log.d(TAG, "onItemLongClick: ");
                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                     alert.setTitle("Delete Medication");
                     alert.setMessage("Are you sure you want to delete the medication");
                     alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            db.removeMedication(position);
+                            Log.d(TAG, "onClick: ");
+                            removeEntry(medList.get(position).getId());
                             refreshMedicationList();
+                            adapter.notifyDataSetChanged();
                         }
                     });
 
@@ -129,7 +137,18 @@ public class MedicationView extends Fragment implements View.OnClickListener {
 
         Log.d(TAG, "onCreateView");
 
-        return view;
+        return mView;
+    }
+
+    private void removeEntry(final int id) throws SQLiteException {
+
+        Log.d(TAG, "removeEntry: " + String.valueOf(id));
+        SQLiteDatabase db = new MedicationDatabaseHelper(mView.getContext()).getReadableDatabase();
+
+        db.delete(TABLE_NAME, _ID + "=" + id, null);
+
+        db.close();
+
     }
 
     @Override

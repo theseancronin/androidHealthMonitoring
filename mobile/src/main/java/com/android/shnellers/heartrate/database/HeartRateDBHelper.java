@@ -3,9 +3,7 @@ package com.android.shnellers.heartrate.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import static com.google.android.gms.wearable.DataMap.TAG;
+import android.widget.Toast;
 
 /**
  * Created by Sean on 15/01/2017.
@@ -13,7 +11,7 @@ import static com.google.android.gms.wearable.DataMap.TAG;
 
 public class HeartRateDBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 29;
+    private static final int DB_VERSION = 68;
 
     private static final String DB_NAME = "HeartRate.db";
 
@@ -26,9 +24,11 @@ public class HeartRateDBHelper extends SQLiteOpenHelper {
             "date DATETIME, " +
             "date_time INTEGER);";
 
+    private Context mContext;
 
     public HeartRateDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        mContext = context;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class HeartRateDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            Log.d(TAG, "onUpgrade: DROPPING TABLE");
+            Toast.makeText(mContext, "DROPPING", Toast.LENGTH_LONG).show();
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + HeartRateContract.Entry.TABLE_NAME);
             onCreate(sqLiteDatabase);
         }

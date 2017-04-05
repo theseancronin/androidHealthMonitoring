@@ -175,8 +175,8 @@ public class ClusterAnalysis extends AppCompatActivity {
         if (getSpinnerValue().equals(Constants.Const.ALL_TIME)) {
 
         } else {
-            ratesMap = mHeartRateDatabase.getRecordsBetweenDates(format.format(c1.getTimeInMillis()),
-                    format.format(c2.getTimeInMillis()), Constants.Const.SELECT_ALL);
+            ratesMap = mHeartRateDatabase.getRecordsBetweenDates(c1.getTimeInMillis(),
+                    c2.getTimeInMillis(), Constants.Const.SELECT_ALL);
         }
 
 

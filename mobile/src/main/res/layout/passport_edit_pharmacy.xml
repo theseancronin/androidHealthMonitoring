@@ -8,115 +8,98 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/info_padding_left"
-            android:paddingEnd="@dimen/info_padding_right"
-            android:paddingLeft="@dimen/info_padding_left"
-            android:paddingRight="@dimen/info_padding_right"
-            android:paddingTop="@dimen/info_padding_top"
-            android:paddingBottom="@dimen/info_padding_bottom"
-            android:background="@drawable/text_view_heading">
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="@drawable/border_bottom_2">
 
             <TextView
-                android:id="@+id/editPharmacyName"
+                android:id="@+id/editNameText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/passport_edit_text"
-            >
-
-            <EditText
-                android:id="@+id/pharmacyName"
-                android:hint="@string/name"
-                android:inputType="text"
-                android:text="O'Sullivans"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_text"
+                android:layout_height="match_parent"
+                android:text="@string/pharmacy_name"
                 />
 
         </RelativeLayout>
 
-        <!-- PHONE NUMBER -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:paddingStart="@dimen/info_padding_left"
-            android:paddingEnd="@dimen/info_padding_right"
-            android:paddingLeft="@dimen/info_padding_left"
-            android:paddingRight="@dimen/info_padding_right"
-            android:paddingTop="@dimen/info_padding_top"
-            android:paddingBottom="@dimen/info_padding_bottom"
-            android:background="@drawable/text_view_heading">
+            android:layout_height="40dp"
+
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/pharmacy_name"
+                android:hint="@string/pharmacy_name"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                />
+
+        </RelativeLayout>
+
+        <!-- PATIENT NUMBER -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="@drawable/border_bottom_2">
 
             <TextView
-                android:id="@+id/editPharmacyNumber"
+                android:id="@+id/pharmacy_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/phoneNumber"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_centerVertical="true"/>
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/passport_edit_text"
+            android:layout_height="40dp"
             >
 
             <EditText
-                android:id="@+id/pharmacyNumber"
+                android:id="@+id/pharmacy_tel"
                 android:hint="@string/phoneNumber"
-                android:inputType="phone"
-                android:text="0214453234"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
+                android:inputType="number"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text"
+                android:padding="8dp"
+                android:background="#ffffff"
                 />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            >
+            android:layout_gravity="end"
+            android:padding="8dp">
 
             <Button
+                android:id="@+id/save_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                android:layout_toLeftOf="@+id/cancelButton"
-                android:layout_toStartOf="@+id/cancelButton"/>
+                android:textColor="@color/windowBackground"
+                android:background="@color/colorPrimary"/>
 
             <Button
                 android:id="@+id/cancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/cancel"/>
+                android:layout_toEndOf="@+id/save_btn"
+                android:text="@string/cancel"
+                android:textColor="@color/windowBackground"
+                android:background="@color/colorPrimary"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
 
         </RelativeLayout>
 

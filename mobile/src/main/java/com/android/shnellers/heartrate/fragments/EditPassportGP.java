@@ -46,7 +46,7 @@ public class EditPassportGP extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.passport_edit_gp_details);
 
-        saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton = (Button) findViewById(R.id.save_btn);
         cancelButton = (Button) findViewById(R.id.cancelButton);
 
         cancelButton.setOnClickListener(this);

@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import static com.android.shnellers.heartrate.database.RemindersContract.Columns.TYPE_COLUMN;
+
 /**
  * Created by Sean on 09/01/2017.
  */
@@ -44,14 +46,15 @@ public class RemindersDatabase {
         close();
     }
 
-    public Cursor getReminders() {
+    public Cursor getReminders(final String reminderTypeSelected) {
         try {
 
             open();
 
             Cursor reminders = db.rawQuery(
                     "SELECT * " +
-                    "FROM " + RemindersContract.Columns.TABLE_NAME, null);
+                    "FROM " + RemindersContract.Columns.TABLE_NAME +
+                    " WHERE " + TYPE_COLUMN + " = '" + reminderTypeSelected + "';", null);
 
             if (reminders == null) {
                 return null;

@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
 
     <application
         android:allowBackup="true"
@@ -32,6 +34,7 @@
         </activity>
         <activity android:name=".HeartRateActivity">
         </activity>
+        <activity android:name=".StartDetailsForm"/>
         <activity
             android:name=".Reminder"
             android:noHistory="true">
@@ -41,12 +44,10 @@
             android:noHistory="true">
         </activity>
         <activity android:name=".LoginActivity"/>
-        <activity android:name="fragments.EditPassportKin">
-        </activity>
-        <activity android:name="fragments.EditPassportBasicDetails">
-        </activity>
-        <activity android:name="fragments.EditPassportGP">
-        </activity>
+        <activity android:name=".fragments.EditPassportKin"/>
+       <activity android:name=".fragments.EditPassportBasicDetails"/>
+        <activity android:name=".fragments.EditPharmacy"/>
+        <activity android:name=".fragments.EditPassportGP"/>
         <activity
             android:name=".MedicationActivity"
             android:label="@string/title_activity_medication"
@@ -85,6 +86,8 @@
         </activity>
 
         <service android:name=".activities.ActivityRecognitionService"/>
+        <service android:name=".servicealarms.HourlyAnalysis"/>
+        <service android:name=".notifications.HourMonitor"/>
         <service android:name=".activities.HeartCheckActivityRecognitionService"/>
         <service android:name=".SensorReceiveService">
             <intent-filter>
@@ -111,6 +114,16 @@
             android:name=".NotificationPublisher"
             android:process=":remote"/>
 
+        <receiver android:name=".notifications.IntelligentActivityThresholdReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.shnellers.heartrate.notifications.INTELLIGENT_ACTIVITY"/>
+            </intent-filter>
+
+        </receiver>
+
+
+
         <activity
             android:name=".activities.ActivityEndSummary"
             android:launchMode="singleInstance"
@@ -123,10 +136,8 @@
             android:theme="@android:style/Theme.Material.Light.Dialog.NoActionBar">
         </activity>
 
-        <activity android:name=".activities.ActivityDashboard"
-            android:theme="@style/AppTheme"/>
 
-        <activity android:name=".activities.ActivityHome"
+        <activity android:name=".activities.ActivityMain"
                   android:theme="@style/AppTheme" />
 
         <activity android:name=".passport.PassportMain"
@@ -152,6 +163,13 @@
                   android:enabled="true">
             <intent-filter>
                 <action android:name="com.android.shnellers.heartrate.DB_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".servicealarms.HourlyAnalysisReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.shnellers.heartrate.servicealarms.HOURLY_ANALYSIS"/>
             </intent-filter>
         </receiver>
     </application>

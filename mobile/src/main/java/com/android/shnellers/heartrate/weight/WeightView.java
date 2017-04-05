@@ -4,32 +4,31 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.shnellers.heartrate.Calculations;
 import com.android.shnellers.heartrate.R;
 import com.android.shnellers.heartrate.charts.MyAxisValueFormatter;
 import com.android.shnellers.heartrate.database.WeightDatabase;
 import com.android.shnellers.heartrate.helpers.DateHelper;
 import com.android.shnellers.heartrate.models.WeightObject;
 import com.android.shnellers.heartrate.views.weight.WeightLog;
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -56,6 +55,7 @@ public class WeightView extends AppCompatActivity {
     public static final String SEVERE = "Status: Severe Weight change detected";
     public static final String OK = "Status: OK";
     public static final String SUSPICIOUS = "Status: Suspicious weight increase detected";
+    public static final String WARNING = "Warning";
 
     @BindView(R.id.log_weight)
     Button mLogWeight;
@@ -78,8 +78,11 @@ public class WeightView extends AppCompatActivity {
     @BindView(R.id.fluid_status)
     TextView mFluidStatus;
 
+    @BindView(R.id.seven_day_lookout)
+    TextView mSevenDayOutlook;
+
     @BindView(R.id.weight_chart)
-    LineChart mWeightChart;
+    BarChart mWeightChart;
 
     @BindView(R.id.yesterday_weight_log)
     LinearLayout mLinearLayout;
@@ -96,7 +99,27 @@ public class WeightView extends AppCompatActivity {
 
         mWeightDB = new WeightDatabase(this);
 
-        mWeightChart.getDescription().setText("7 Day Outlook");
+        setupChart();
+
+        setChartDisplay();
+
+        setupWeightDisplay();
+
+        set7DayStatus();
+        setFluidAccumulationStatus();
+
+        setBMI();
+
+    }
+
+    private void set7DayStatus() {
+
+        HashMap<String, Integer> weights = mWeightDB.getWeightChangeOverWeek();
+
+    }
+
+    private void setupChart() {
+        mWeightChart.getDescription().setText("Monthly Outlook");
         mWeightChart.setTouchEnabled(false);
         XAxis xAxis = mWeightChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -133,10 +156,27 @@ public class WeightView extends AppCompatActivity {
 
         YAxis rightAxis = mWeightChart.getAxisRight();
         rightAxis.setEnabled(false);
+    }
 
-        setChartDisplay();
+    private void setBMI() {
 
-        setupWeightDisplay();
+        int lastWeight = mWeightDB.getLastEntry();
+
+        Log.d(TAG, "setBMI: " + String.valueOf(lastWeight));
+
+        if (lastWeight > -1) {
+
+            double bmi = Calculations.bmiCalculator(lastWeight);
+
+            Log.d(TAG, "setBMI: VALUE" + Double.toString(bmi));
+
+            String bmiStr = "Your current BMI is " + String.valueOf(bmi);
+
+            mBmiStatus.setText(bmiStr);
+
+        } else {
+            mBmiValue.setText("--");
+        }
 
     }
 
@@ -191,32 +231,8 @@ public class WeightView extends AppCompatActivity {
 
 
         if (!values.isEmpty()) {
-//            for (int x = 0; x < weights.size(); x++) {
-//                values.add(new Entry(x, (float) weights.get(x).getWeight()));
-//            }
 
-            // create a dataset and give it a type
-            LineDataSet set1 = new LineDataSet(values, "DataSet 1");
-            set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-            set1.setColor(ColorTemplate.getHoloBlue());
-            set1.setValueTextColor(ColorTemplate.getHoloBlue());
-            set1.setLineWidth(1.5f);
-            set1.setDrawCircles(false);
-            set1.setDrawValues(false);
-            set1.setFillAlpha(65);
-            set1.setFillColor(ColorTemplate.getHoloBlue());
-            set1.setHighLightColor(Color.rgb(244, 117, 117));
-            set1.setDrawCircleHole(false);
 
-//            // create a data object with the datasets
-//            ArrayList<String> weeklyDates = getLast7DaysAsDate();
-
-            LineData data = new LineData(set1);
-            data.setValueTextColor(Color.WHITE);
-            data.setValueTextSize(9f);
-
-            // set data
-            mWeightChart.setData(data);
         }
 
     }
@@ -256,38 +272,60 @@ public class WeightView extends AppCompatActivity {
             double lossOrGain = Double.valueOf(oneDigit.format(todaysWeight - yesterdayWeight));
             setWeightViewValue(mLossOrGain, lossOrGain);
             if (lossOrGain >= 1.5) {
-                setFluidAccumulationStatus(SEVERE);
+               // setFluidAccumulationStatus(SEVERE);
             } else if (lossOrGain >= 1) {
-                setFluidAccumulationStatus(SUSPICIOUS);
+               // setFluidAccumulationStatus(SUSPICIOUS);
             } else {
-                setFluidAccumulationStatus(OK);
+               // setFluidAccumulationStatus(OK);
             }
         } else {
             mLossOrGain.setText(getString(R.string.no_value));
         }
     }
 
-    private void setFluidAccumulationStatus(String warningType) {
+    /**
+     *
+     */
+    private void setFluidAccumulationStatus() {
 
-        mFluidStatus.setText(warningType);
+        float weightChange = mWeightDB.getWeeklyWeightChange();
+
+        if (weightChange == -1) {
+            String txt = "No weights logged to analyse weekly increase";
+            mSevenDayOutlook.setText(txt);
+            mSevenDayOutlook.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.textPrimary));
+
+        } else {
+            mSevenDayOutlook.setText("Your weight has increases by " + weightChange +" kgs in the last 7 days.");
+            if (weightChange >= 2) {
+                mSevenDayOutlook.setTextColor(Color.RED);
+                mFluidStatus.setText(WARNING);
+                mFluidStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.textPrimary));
+            } else {
+                mSevenDayOutlook.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.textPrimary));
+                mFluidStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.textPrimary));
+            }
+
+        }
+        //mFluidStatus.setText(warningType);
 
         String errorTxt;
 
-        if (warningType.equals(SEVERE) || warningType.equals(SUSPICIOUS)) {
-
-            if (warningType.equals(SEVERE)) {
-                errorTxt = SEVERE;
-            } else {
-                errorTxt = SUSPICIOUS;
-            }
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_error_white)
-                    .setContentTitle("Weight Warning")
-                    .setContentText(errorTxt);
-            NotificationManagerCompat nm = NotificationManagerCompat.from(this);
-            nm.notify(1, builder.build());
-        }
+//        if (warningType.equals(SEVERE) || warningType.equals(SUSPICIOUS)) {
+//
+//            if (warningType.equals(SEVERE)) {
+//                errorTxt = SEVERE;
+//            } else {
+//                errorTxt = SUSPICIOUS;
+//            }
+//
+//            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+//                    .setSmallIcon(R.drawable.ic_error_white)
+//                    .setContentTitle("Weight Warning")
+//                    .setContentText(errorTxt);
+//            NotificationManagerCompat nm = NotificationManagerCompat.from(this);
+//            nm.notify(1, builder.build());
+//        }
 
     }
 

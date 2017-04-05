@@ -44,6 +44,9 @@
 
         <activity android:name=".HeartRateActivity" />
 
+        <activity android:name=".heart_rate.HeartRateHome" />
+        <activity android:name=".heart_rate.LatestHeartReadings" />
+
         <activity android:name=".voice_recorder.DiaryLog" />
 
         <activity android:name=".heart_rate.UserAlertCheck" />

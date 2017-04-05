@@ -13,17 +13,30 @@ public class ActivityStats {
     private int avgHeartRate;
     private double distance;
 
+    private long dateTime;
+
     public ActivityStats(String activityName) {
         this.activityName = activityName;
     }
 
-    public ActivityStats(int minutes, int steps, String activityName, int calories, int avgHeartRate, double distance) {
+    public ActivityStats(int minutes, int steps, String activityName,
+                         int calories, int avgHeartRate, double distance,
+                         long dateTime) {
         this.distance = distance;
         this.minutes = minutes;
         this.steps = steps;
         this.activityName = activityName;
         this.calories = calories;
         this.avgHeartRate = avgHeartRate;
+        this.dateTime = dateTime;
+    }
+
+    public long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(final long dateTime) {
+        this.dateTime = dateTime;
     }
 
     public void setMinutes(int minutes) {

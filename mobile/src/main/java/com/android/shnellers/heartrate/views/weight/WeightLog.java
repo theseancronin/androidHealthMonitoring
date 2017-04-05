@@ -84,6 +84,7 @@ public class WeightLog extends Activity {
      *
      * @throws SQLiteException
      */
+
     @OnClick(R.id.save_btn)
     protected void saveWeight() throws SQLiteException {
 

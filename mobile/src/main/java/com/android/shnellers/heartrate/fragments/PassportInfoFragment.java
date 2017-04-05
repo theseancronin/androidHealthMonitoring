@@ -134,7 +134,8 @@ public class PassportInfoFragment extends Fragment {
                 public void onClick(View v) {
                     switch (onClick) {
                         case PassportContract.Passport.EDIT_BASIC_DETAILS:
-
+                            Intent intent = new Intent(getActivity(), EditPassportBasicDetails.class);
+                            getActivity().startActivity(intent);
 
 
 //                            EditBasicDetails ebd = new EditBasicDetails();
@@ -157,8 +158,8 @@ public class PassportInfoFragment extends Fragment {
                             Log.i("Editing Details", "Worked!!");
                             break;
                         case PassportContract.Passport.EDIT_NEXT_OF_KIN:
-                            Intent intent = new Intent(getActivity(), EditPassportKin.class);
-                            getActivity().startActivity(intent);
+                            Intent basicIntent = new Intent(getActivity(), EditPassportKin.class);
+                            getActivity().startActivity(basicIntent);
 //                            EditBasicDetails kinDetails = new EditBasicDetails();
 //
 //                            args.putString(

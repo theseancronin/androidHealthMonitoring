@@ -9,14 +9,29 @@ import java.io.Serializable;
 public class Medication implements Serializable {
 
     private String mName;
-    private int mFrequency, mStrength;
+    private int mFrequency, mStrength, id;
 
-    public Medication (final String name,
+    public Medication (final int id, final String name,
                        final int strength,
                        final int frequency) {
+        setId(id);
         setName(name);
         setFrequency(frequency);
         setStrength(strength);
+    }
+
+    public Medication(final String name, final int frequency, final int strength) {
+        mName = name;
+        mFrequency = frequency;
+        mStrength = strength;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -13,16 +13,18 @@ public class DiaryEntry implements Parcelable {
     private String month;
     private String weekday;
     private String time;
-
     private String day;
 
-    public DiaryEntry (final String entry, final String month,
+    private int id;
+
+    public DiaryEntry (final int id, final String entry, final String month,
                        final String weekday, final String time, final String day) {
         setEntry(entry);
         setMonth(month);
         setWeekday(weekday);
         setTime(time);
         setDay(day);
+        setId(id);
     }
 
     protected DiaryEntry(Parcel in) {
@@ -31,6 +33,7 @@ public class DiaryEntry implements Parcelable {
         weekday = in.readString();
         time = in.readString();
         day = in.readString();
+        id = in.readInt();
     }
 
     public static final Creator<DiaryEntry> CREATOR = new Creator<DiaryEntry>() {
@@ -44,6 +47,14 @@ public class DiaryEntry implements Parcelable {
             return new DiaryEntry[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
 
     public String getEntry() {
         return entry;
@@ -97,5 +108,6 @@ public class DiaryEntry implements Parcelable {
         dest.writeString(weekday);
         dest.writeString(time);
         dest.writeString(day);
+        dest.writeInt(id);
     }
 }

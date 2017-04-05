@@ -182,15 +182,59 @@
     <string name="resting_rates_100_bpm">Resting Rates 100+ BPM</string>
     <string name="km">KM</string>
     <string name="avg_bpm">Avg BPM</string>
+    <string name="morning">5am - 12pm</string>
+    <string name="afternoon">12pm - 5pm</string>
+    <string name="evening">5pm - 21pm</string>
+    <string name="nighttime">21pm - 5am</string>
+
+    <string name="alarms_set">Alarms Set</string>
+    <string name="post_activity_resting_rates">Post Activity Resting Rates</string>
+    <string name="hourly_analysis">Hourly Analysis</string>
+    <string name="hour">Hour</string>
+    <string name="hr_over_100_beats_per_minute">HR Over 100 Beats Per Minute</string>
+    <string name="hr_under_40_beats_per_minute">HR Under 40 Beats Per Minute</string>
+    <string name="avg_hr">Avg HR</string>
+    <string name="max_hr">MAX HR</string>
+    <string name="min_hr">Min HR</string>
+    <string name="rest_hr">Rest HR</string>
+    <string name="_7">7</string>
+    <string name="_30_day">30-Day</string>
+    <string name="_7_day">7-Day</string>
+    <string name="year">Year</string>
+    <string name="day">Day</string>
+    <string name="select_date">Select Date</string>
 
     <!-- Extras list menu -->
     <array name="extrasListMenu">
+
+        <item>Weight</item>
+        <item>Analysis</item>
+        <item>History</item>
+        <item>Activity</item>
+        <item>Passport</item>
+    </array>
+
+    <!-- Extras list menu -->
+    <array name="drawer_items">
         <item>Reminders</item>
         <item>Weight</item>
         <item>Diary Entries</item>
-        <item>Analysis</item>
+        <item>Activity</item>
+        <item>Passport</item>
         <item>Settings</item>
     </array>
+
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Closed</string>
+    <string name="condition_small">condition</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="change_email">Change Email</string>
+    <string name="email_hint">email</string>
+    <string name="change_passport_password">Change Passport Password (4-digit)</string>
+    <string name="passport_password">passport password</string>
+    <string name="confirm_email">confirm email</string>
+    <string name="pharmacy_name">Pharmacy Name</string>
 
     <!-- Reminder type list -->
     <string-array name="reminder_types">
@@ -225,8 +269,8 @@
 
     <!-- Date selection type list -->
     <string-array name="timeline_spinner">
-        <item>7-Day</item>
         <item>30-Day</item>
+        <item>7-Day</item>
         <item>All Time</item>
     </string-array>
 
@@ -240,9 +284,41 @@
     </string-array>
 
     <!-- Activity to display selection list -->
+    <string-array name="activity">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Cycling</item>
+    </string-array>
+
+    <!-- Activity to display selection list -->
     <string-array name="min_max_avg">
+        <item>Avg Heart Rate</item>
         <item>Min Heart Rate</item>
         <item>Max Heart Rate</item>
-        <item>Avg Heart Rate</item>
+    </string-array>
+
+    <string-array name="symptoms">
+        <item>Severe pressure, squeezing, pain or discomfort in the chest</item>
+        <item>Pain or discomfort that spreads into the shoulders, neck, arms, or jaw</item>
+        <item>Chest Pain + Sweating, cool, clammy skin, and/or paleness</item>
+        <item>Chest Pain + Shortness of breath</item>
+        <item>Chest Pain + Nausea or vomiting</item>
+        <item>Chest Pain + Dizziness or fainting</item>
+        <item>Chest Pain + Unexplained weakness or fatigue</item>
+        <item>Chest Pain + Rapid or irregular pulse</item>
+        <item>Pain in the jaw, neck, upper back, and/or chest</item>
+        <item>Hoarseness because of pressure on the vocal cords</item>
+        <item>Difficulty swallowing</item>
+        <item>Heart palpitations</item>
+        <item>Anxiety</item>
+        <item>Low blood pressure</item>
+    </string-array>
+
+    <string-array name="time_of_day">
+        <item>All Day</item>
+        <item>Morning 5am - 12pm</item>
+        <item>Afternoon 12pm - 17pm</item>
+        <item>Evening 17pm - 21pm</item>
+        <item>Night 21am - 4am</item>
     </string-array>
 </resources>

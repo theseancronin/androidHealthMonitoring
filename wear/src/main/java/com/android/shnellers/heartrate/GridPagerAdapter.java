@@ -7,7 +7,6 @@ import android.support.wearable.view.FragmentGridPagerAdapter;
 
 import com.android.shnellers.heartrate.activities.ActivityRecognitionSummary;
 import com.android.shnellers.heartrate.activities.NewActivity;
-import com.android.shnellers.heartrate.heart_rate.LatestHeartReadings;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class GridPagerAdapter extends FragmentGridPagerAdapter {
 //        row1.addPages(
 //                new DiaryLog());
        // row1.addPages(new HeartRateActivity());
-        row1.addPages(new LatestHeartReadings());
+       // row1.addPages(new LatestHeartReadings());
 
 
         GridPagerRow row2 = new GridPagerRow();

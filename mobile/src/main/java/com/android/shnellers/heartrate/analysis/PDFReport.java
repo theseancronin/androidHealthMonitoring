@@ -19,10 +19,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
 import static android.content.ContentValues.TAG;
+import static com.android.shnellers.heartrate.Constants.Const.AVG;
+import static com.android.shnellers.heartrate.Constants.Const.LESS_THAN_40;
+import static com.android.shnellers.heartrate.Constants.Const.MAX_CAPITAL_M;
+import static com.android.shnellers.heartrate.Constants.Const.MIN;
+import static com.android.shnellers.heartrate.Constants.Const.OVER_100;
+import static com.android.shnellers.heartrate.Constants.Const.RESTING_RATES;
 
 /**
  * Created by Sean on 20/03/2017.
@@ -33,7 +40,7 @@ public class PDFReport {
     private HeartRateDatabase mHeartRateDatabase;
     private DiaryDatabase mDiaryDatabase;
 
-    public static File createPDFReport(int dbSize) {
+    public static File createPDFReport(int dbSize, HashMap<String, Integer> restingData) {
         Font heading = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
         Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
         File pdfFolder = new File (Environment.getExternalStorageDirectory(), "pdfdemo");
@@ -67,7 +74,7 @@ public class PDFReport {
              document.add(Chunk.NEWLINE);
 
             // Table of general information
-            document.add(createFirstTable(dbSize));
+            document.add(createFirstTable(dbSize, restingData));
             addDoubleSpacing(document);
 
             // Table of post activity resting rate stats
@@ -216,8 +223,9 @@ public class PDFReport {
      * Creates our first table
      * @return our first table
      * @param dbSize
+     * @param restingData
      */
-    public static PdfPTable createFirstTable(int dbSize) {
+    public static PdfPTable createFirstTable(int dbSize, HashMap<String, Integer> restingData) {
         // a table with three columns
         PdfPTable table = new PdfPTable(4);
         // the cell object
@@ -227,15 +235,15 @@ public class PDFReport {
 
         //
         createNewTableRow(table, new Phrase("Total Detected", boldFont), String.valueOf(dbSize));
-        createNewTableRow(table, new Phrase("Resting", boldFont), "9876");
+        createNewTableRow(table, new Phrase("Resting", boldFont), String.valueOf(restingData.get(RESTING_RATES)));
 
-        createNewTableRow(table, new Phrase("Max Resting Rate", boldFont), "147");
-        createNewTableRow(table, new Phrase("Min Resting Rate", boldFont), "44");
+        createNewTableRow(table, new Phrase("Max Resting Rate", boldFont), String.valueOf(restingData.get(MAX_CAPITAL_M)));
+        createNewTableRow(table, new Phrase("Min Resting Rate", boldFont), String.valueOf(restingData.get(MIN)));
 
-        createNewTableRow(table, new Phrase("Avg Resting Rate", boldFont), "88");
-        createNewTableRow(table, new Phrase("Resting rates 100+", boldFont), "890");
+        createNewTableRow(table, new Phrase("Avg Resting Rate", boldFont), String.valueOf(restingData.get(AVG)));
+        createNewTableRow(table, new Phrase("Resting rates 100+", boldFont), String.valueOf(restingData.get(OVER_100)));
 
-        createNewTableRow(table, new Phrase("Resting Rates < 40", boldFont), "0");
+        createNewTableRow(table, new Phrase("Resting Rates < 40", boldFont), String.valueOf(restingData.get(LESS_THAN_40)));
         createNewTableRow(table, new Phrase("Resting", boldFont), "9876");
 
         return table;

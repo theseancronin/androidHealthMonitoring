@@ -26,11 +26,14 @@ import com.android.shnellers.heartrate.fragments.DetailFragment;
 import com.android.shnellers.heartrate.fragments.PassportInfoFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.android.shnellers.heartrate.PassportContract.Passport.EDIT;
 import static com.android.shnellers.heartrate.PassportContract.Passport.IS_BLOCK_HEADING;
 import static com.android.shnellers.heartrate.PassportContract.Passport.PHONE_NUMBER;
 import static com.android.shnellers.heartrate.PassportContract.Passport.WEIGHT;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.PHARMACY_NAME;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.PHARMACY_NUMBER;
 
 
 /**
@@ -40,6 +43,7 @@ import static com.android.shnellers.heartrate.PassportContract.Passport.WEIGHT;
 public class PersonalDetails extends Fragment {
 
     private static final String TAG = "Personal.Details";
+    public static final String CONDITION = "Condition";
 
     private TextInputEditText mName, mAge, mCondition, mWeight, mLocation,
                      mEmail, mPhonenumber;
@@ -166,6 +170,7 @@ public class PersonalDetails extends Fragment {
         PassportInfoFragment location = new PassportInfoFragment();
         PassportInfoFragment phoneNumber = new PassportInfoFragment();
         PassportInfoFragment email = new PassportInfoFragment();
+        PassportInfoFragment condition = new PassportInfoFragment();
 
 
         String onClick = "editBasicDetails";
@@ -236,6 +241,15 @@ public class PersonalDetails extends Fragment {
                         false,
                         isNotClickable(),
                         null));
+        condition.setArguments(
+                createBundleOfArguments(
+                        CONDITION,
+                        "Double bypass.",
+                        false,
+                        false,
+                        isNotClickable(),
+                        null));
+
 
         // Get the fragment manager and begin transaction
         FragmentManager mFragmentManager = getChildFragmentManager();
@@ -250,6 +264,7 @@ public class PersonalDetails extends Fragment {
         ft.add(R.id.passportBasicContainer, location);
         ft.add(R.id.passportBasicContainer, phoneNumber);
         ft.add(R.id.passportBasicContainer, email);
+        ft.add(R.id.passportBasicContainer, condition);
 
         ft.addToBackStack(basicInfo.getTag());
         ft.addToBackStack(name.getTag());
@@ -259,6 +274,7 @@ public class PersonalDetails extends Fragment {
         ft.addToBackStack(location.getTag());
         ft.addToBackStack(phoneNumber.getTag());
         ft.addToBackStack(email.getTag());
+        ft.addToBackStack(condition.getTag());
 
         ft.commit();
 
@@ -446,6 +462,24 @@ public class PersonalDetails extends Fragment {
         PassportInfoFragment name = new PassportInfoFragment();
         PassportInfoFragment telephone = new PassportInfoFragment();
 
+
+        HashMap<String, String> fields = new UserDatabase(getActivity()).getPharmacyDetails();
+
+        String nameStr = "";
+        String number = "";
+
+        if (fields != null) {
+
+            if (fields.get(PHARMACY_NAME) != null) {
+                nameStr = fields.get(PHARMACY_NAME);
+            }
+
+            if (fields.get(PHARMACY_NUMBER) != null) {
+                number = fields.get(PHARMACY_NUMBER);
+            }
+        }
+
+
         // Set the arguments for the pharmacy details
         pharmDetails.setArguments(
                 createBundleOfArguments(
@@ -458,7 +492,7 @@ public class PersonalDetails extends Fragment {
         name.setArguments(
                 createBundleOfArguments(
                         PassportContract.Passport.NAME,
-                        "O'Sullivans",
+                        nameStr,
                         false,
                         false,
                         isNotClickable(),
@@ -466,7 +500,7 @@ public class PersonalDetails extends Fragment {
         telephone.setArguments(
                 createBundleOfArguments(
                         PHONE_NUMBER,
-                        "0214356789",
+                        number,
                         false,
                         false,
                         isNotClickable(),

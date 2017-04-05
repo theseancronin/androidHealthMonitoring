@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.TABLE_NAME;
 
 
 /**
@@ -51,11 +52,9 @@ public class UserDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        Log.d("oldVersion", Integer.toString(oldVersion));
-        Log.w("DBAdapter", "Upgrading from " + oldVersion + " to " + newVersion);
-
         if (newVersion > oldVersion) {
-
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
         }
 
      //   db.execSQL(UserDatabase.SQL_DELETE_ENTRIES);

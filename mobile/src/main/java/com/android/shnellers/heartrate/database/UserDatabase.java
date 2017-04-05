@@ -10,6 +10,23 @@ import android.util.Log;
 
 import com.android.shnellers.heartrate.User;
 
+import java.util.HashMap;
+
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_AGE;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_CONDITION;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_DATE_OF_BIRTH;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_EMAIL;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_LOCATION;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_NAME;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_PASSWORD;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.COLUMN_PHONE_NUMBER;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.HEIGHT;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.PATIENT_NUMBER;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.PHARMACY_NAME;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.PHARMACY_NUMBER;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry.TABLE_NAME;
+import static com.android.shnellers.heartrate.database.UserContract.UserEntry._ID;
+
 
 /**
  * Created by Sean on 18/10/2016.
@@ -18,17 +35,24 @@ import com.android.shnellers.heartrate.User;
 public class UserDatabase {
 
     // Implement methods that create and maintain the database.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Users.db";
     private static final String TAG = UserDatabaseHelper.class.getSimpleName();
 
     public static final String SQL_CREATE_USERS =
             "CREATE TABLE IF NOT EXISTS " + UserContract.UserEntry.TABLE_NAME + " (" +
-                    UserContract.UserEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     UserContract.UserEntry.COLUMN_NAME + " VARCHAR(70) NOT NULL," +
                     UserContract.UserEntry.COLUMN_EMAIL + " VARCHAR(70) NOT NULL," +
                     UserContract.UserEntry.COLUMN_PASSWORD + " VARCHAR(70) NOT NULL," +
-                    UserContract.UserEntry.COLUMN_AGE + " INTEGER(3) ," +
+                    UserContract.UserEntry.COLUMN_AGE + " INTEGER(3), " +
+                    COLUMN_PHONE_NUMBER + " INTEGER, " +
+                    PATIENT_NUMBER + " VARCHAR, " +
+                    HEIGHT + " INTEGER, " +
+                    COLUMN_DATE_OF_BIRTH + " DATETIME, " +
+                    COLUMN_LOCATION + " VARCHAR, " +
+                    PHARMACY_NAME + " VARCHAR, " +
+                    PHARMACY_NUMBER + " INTEGER, " +
                     UserContract.UserEntry.COLUMN_CONDITION + " VARCHAR(1000)," +
                     UserContract.UserEntry.COLUMN_LOGGED_IN + " INTEGER(1));";
 
@@ -243,5 +267,93 @@ public class UserDatabase {
 //                    "age = '" + age + "', " +
 //                    "condition = '" + condition + "', " +
 //                "WHERE email = '" + email + "';", null);
+    }
+
+    /**
+     * Update the pharmacy details for the user.
+     */
+    public void savePharmacyDetails(final String name, final int number) {
+
+        ContentValues values = new ContentValues();
+        values.put(PHARMACY_NAME, name);
+        values.put(PHARMACY_NUMBER, number);
+
+        open();
+
+        long insert = db.update(TABLE_NAME, values, _ID + " = " + 1, null);
+
+        if (insert == -1 ) {
+            Log.d(TAG, "FAILED");
+        }
+
+        close();
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    public HashMap<String, String> getPharmacyDetails() {
+
+        HashMap<String, String> fields = new HashMap<>();
+
+        open();
+
+        String q = "SELECT * FROM " +
+                 TABLE_NAME;
+
+        Cursor c = db.rawQuery(q, null);
+
+        if (c.moveToFirst()) {
+
+            String name = c.getString(c.getColumnIndex(PHARMACY_NAME));
+            String number = c.getString(c.getColumnIndex(PHARMACY_NUMBER));
+
+            if (name != null) {
+                fields.put(PHARMACY_NAME, c.getString(c.getColumnIndex(PHARMACY_NAME)));
+            }
+            if (name != null) {
+                fields.put(PHARMACY_NUMBER, String.valueOf(c.getInt(c.getColumnIndex(PHARMACY_NUMBER))));
+            }
+
+            return fields;
+        }
+
+        c.close();
+        close();
+
+        return null;
+    }
+
+    /**
+     * Inserts a dummy user
+     */
+    public void insertUser() {
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_NAME, "Sean Cronin");
+        values.put(COLUMN_LOCATION, "Cork");
+        values.put(COLUMN_AGE, 32);
+        values.put(COLUMN_DATE_OF_BIRTH, "20/01/1985");
+        values.put(COLUMN_CONDITION, "Suffered cardiac arrest during summer 2014");
+        values.put(COLUMN_EMAIL, "user@hearthealth.com");
+        values.put(PATIENT_NUMBER, "PT1234567");
+        values.put(PHARMACY_NUMBER, 0214321567);
+        values.put(PHARMACY_NAME, "O'Sullivan's");
+        values.put(COLUMN_PASSWORD, "password");
+
+        open();
+
+        long insert = db.insert(TABLE_NAME, null, values);
+
+        if (insert != -1) {
+            Log.d(TAG, "OK");
+        } else  {
+            Log.d(TAG, "FAILED");
+        }
+
+        close();
+
     }
 }
